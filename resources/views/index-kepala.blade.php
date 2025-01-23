@@ -73,7 +73,7 @@
               <div>Penyelia</div>
             </a>
           </li>
-          <li class="menu-item">
+          <li class="menu-item" @if(!session('show_generate_key_menu')) style="display: none;" @endif>
             <a href="javascript:void(0);" class="menu-link" onclick="showGenerateKeyForm()">
               <i class="menu-icon tf-icons bx bx-key"></i>
               <div>Generate Key</div>
@@ -186,6 +186,19 @@
   <script src="/dashboard/assets/vendor/js/menu.js"></script>
   <script src="/dashboard/assets/js/main.js"></script>
   <script>
+    // Fungsi untuk membaca query string dari URL
+    function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    // cek menu generate
+    window.onload = function() {
+        const menu = getQueryParam('menu');
+        if (menu === 'generate-key') {
+            showGenerateKeyForm(); 
+        }
+    }
     function showGenerateKeyForm() {
       document.getElementById('generateKeyForm').style.display = 'block';
       document.getElementById('keyTableContainer').style.display = 'block';
