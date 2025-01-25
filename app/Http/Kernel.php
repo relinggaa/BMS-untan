@@ -64,6 +64,8 @@ class Kernel extends HttpKernel
     
         // Middleware custom
         'auth.kepala' => \App\Http\Middleware\AuthenticateKepala::class,
+        'auth.admin' => \App\Http\Middleware\AuthenticateAdmin::class,
+        'auth.bendahara' => \App\Http\Middleware\BendaharaMiddleware::class,
     ];
     
  

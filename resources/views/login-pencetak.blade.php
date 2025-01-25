@@ -69,15 +69,16 @@
     <!-- Content -->
     <div class="container-xxl">
       <div class="container-xxl d-flex justify-content-center align-items-center vh-100">
-        @if (session('error'))
-        <div style="color: red;">{{ session('error') }}</div>
-      @endif
-        <form action="{{ route('verify.pelaporan') }}" method="POST">
-        @csrf
+        <div class="card" style="width: 350px;">
+          @if (session('error'))
+              <div style="color: red;">{{ session('error') }}</div>
+          @endif
+          <form action="{{ route('verify.pencetak') }}" method="POST">
+            @csrf
         <div class="card shadow-lg" style="width: 350px;">
           <div class="card-body text-center">
             <h2 class="mb-4">Log As</h2>
-            <button class="btn btn-primary w-100 mb-2">Pelaporan</button>
+            <button class="btn btn-primary w-100 mb-2">Pencetak</button>
             <div class="">
               <label for="firstName" class="form-label">Input Key</label>
               <input
@@ -94,10 +95,16 @@
           </div>
         </div>
       </div>
-        </form>
+          </form>
     </div>
 
-       
+          <!-- /Register -->
+        
+    
+
+    <!-- / Content -->
+
+  
 
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->

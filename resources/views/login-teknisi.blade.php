@@ -69,6 +69,12 @@
     <!-- Content -->
     <div class="container-xxl">
       <div class="container-xxl d-flex justify-content-center align-items-center vh-100">
+        <div class="card" style="width: 350px;">
+          @if (session('error'))
+              <div style="color: red;">{{ session('error') }}</div>
+          @endif
+          <form action="{{ route('verify.teknisi') }}" method="POST">
+            @csrf
         <div class="card shadow-lg" style="width: 350px;">
           <div class="card-body text-center">
             <h2 class="mb-4">Log As</h2>
@@ -89,6 +95,7 @@
           </div>
         </div>
       </div>
+          </form>
     </div>
 
           <!-- /Register -->

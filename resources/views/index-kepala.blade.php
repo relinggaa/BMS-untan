@@ -43,36 +43,6 @@
               <div>Laporan Siap Cetak</div>
             </a>
           </li>
-          <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-user"></i>
-              <div>Admin</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-wallet"></i>
-              <div>Bendahara</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-wrench"></i>
-              <div>Teknisi</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-file"></i>
-              <div>Pelapor</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-check-shield"></i>
-              <div>Penyelia</div>
-            </a>
-          </li>
           <li class="menu-item" @if(!session('show_generate_key_menu')) style="display: none;" @endif>
             <a href="javascript:void(0);" class="menu-link" onclick="showGenerateKeyForm()">
               <i class="menu-icon tf-icons bx bx-key"></i>
@@ -126,6 +96,7 @@
                   <option value="Teknisi">Teknisi</option>
                   <option value="Pelapor">Pelapor</option>
                   <option value="Penyelia">Penyelia</option>
+                  <option value="Pencetak">Pencetak</option>
                   <option value="Kepala Lab">Kepala Lab</option>
                 </select>
               </div>
