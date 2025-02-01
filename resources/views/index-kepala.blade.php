@@ -22,7 +22,32 @@
     window.location.href = "{{ route('login.kepala') }}";
   </script>
   @endif
-
+  <nav class="navbar navbar-expand-lg navbar-light d-lg-none">
+    <div class="container-fluid">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-printer"></i>Laporan Siap Cetak</a></li>
+          <li class="nav-item" @if(!session('show_generate_key_menu')) style="display: none;" @endif>
+            <a class="nav-link" href="#" onclick="showGenerateKeyForm()"><i class="menu-icon bx bx-key"></i>Generate Key</a>
+          </li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-cloud-download"></i>Backup All Data</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-file"></i>Data Laporan</a></li>
+          <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-receipt"></i>Data Bukti Pembayaran</a></li>
+          <li class="nav-item">
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="menu-link w-100 text-start bg-transparent" style="border:none;">
+                <i class="menu-icon bx bx-log-out"></i>Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
   <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
       <!-- Menu -->
@@ -56,6 +81,18 @@
             </a>
           </li>
           <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-cloud-massage"></i>
+              <div>Data Laporan</div>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a href="javascript:void(0);" class="menu-link">
+              <i class="menu-icon tf-icons bx bx-cloud-download"></i>
+              <div>Data Bukti Pembayaran</div>
+            </a>
+          </li>
+          <li class="menu-item">
             <form action="{{ route('logout') }}" method="POST">
               @csrf
               <button type="submit" class="menu-link w-100 text-start bg-transparent" style="border:none;">
@@ -67,7 +104,8 @@
         </ul>
       </aside>
       <!-- / Menu -->
-
+      
+      
       <div class="layout-page">
         <div class="content-wrapper">
           <!-- Content -->

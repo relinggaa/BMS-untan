@@ -22,40 +22,38 @@
     window.location.href = "{{ route('login.bendahara') }}";
   </script>
   @endif
+  <style>
+      #layout-menu ul li a {
+      display: flex;
+      align-items: center;
+      font-size: 1rem;
+      color: #6c757d; 
+      padding: 0.75rem 1rem;
+      text-decoration: none;
+      border-radius: 0.375rem;
+      transition: background-color 0.2s ease;
+    }
 
+    #layout-menu ul li  a:hover {
+      background-color: #ced4da;
+    }
+  </style>
   <div class="layout-wrapper layout-content-navbar">
     <div class="layout-container">
       <!-- Menu -->
-      <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+      <aside id="layout-menu" class="d-none d-lg-block bg-menu-theme p-3" style="width: 250px; min-height: 100vh;">
         <div class="app-brand demo">
           <a href="index.html" class="app-brand-link">
             <span class="app-brand-text demo menu-text fw-bolder ms-2">Bendahara</span>
           </a>
-          <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
-            <i class="bx bx-chevron-left bx-sm align-middle"></i>
-          </a>
-        </div>
-        <div class="menu-inner-shadow"></div>
-        <ul class="menu-inner py-1">
-          <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-printer"></i>
-              <div>Laporan Siap Cetak</div>
-            </a>
-          </li>
-          <li class="menu-item" @if(!session('show_generate_key_menu')) style="display: none;" @endif>
-            <a href="javascript:void(0);" class="menu-link" onclick="showGenerateKeyForm()">
-              <i class="menu-icon tf-icons bx bx-key"></i>
-              <div>Generate Key</div>
-            </a>
-          </li>
-          <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-cloud-download"></i>
-              <div>Backup All Data</div>
-            </a>
-          </li>
-          <li class="menu-item">
+          </div>
+    
+        <ul class="list-unstyled">
+          <li><a href="#" class="d-block p-2"><i class="menu-icon bx bx-download"></i>Data Admin</a></li>
+          <li><a href="#" class="d-block p-2"><i class="menu-icon bx bx-notepad"></i>Buat KAS</a></li>
+          <li><a href="#" class="d-block p-2"><i class="menu-icon bx bx-receipt"></i>Buat Invoice</a></li>
+          <li><a href="#" class="d-block p-2"><i class="menu-icon bx bx-file"></i>Buat Kwitansi</a></li>
+          <li class="d-block p-2">
             <form action="{{ route('logout') }}" method="POST">
               @csrf
               <button type="submit" class="menu-link w-100 text-start bg-transparent" style="border:none;">
@@ -66,6 +64,34 @@
           </li>
         </ul>
       </aside>
+      
+      <!-- Main Content -->
+      <div class="flex-grow-1">
+        <!-- Navbar (Tampil di Mobile) -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light d-lg-none">
+          <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+              <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-download"></i>Data Admin</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-notepad"></i>Buat KAS</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-receipt"></i>Buat Invoice</a></li>
+                <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-file"></i>Buat Kwitansi</a></li>
+                <li  class="nav-item">
+                  <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="menu-link w-100 text-start bg-transparent" style="border:none;">
+                      <i class="menu-icon tf-icons bx bx-log-out"></i>
+                      <div>Logout</div>
+                    </button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
       <!-- / Menu -->
             <h1>Berhasil Login Bendahara</h1>
          
