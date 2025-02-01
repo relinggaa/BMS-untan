@@ -17,7 +17,7 @@ class KeyController extends Controller
         $keyInput = $request->input('key');
         $defaultKey = '123';
 
-        $keyData = Key::where('key', $keyInput)->first();
+        $keyData =  Key::where('key', $keyInput)->where('role', 'Kepala Lab')->first();
 
         if ($keyInput === $defaultKey || $keyData) {
             session(['login_kepala' => true, 'show_generate_key_menu' => true]);

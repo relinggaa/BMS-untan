@@ -82,13 +82,13 @@
           </li>
           <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-cloud-massage"></i>
+              <i class="menu-icon tf-icons bx bx-file"></i>
               <div>Data Laporan</div>
             </a>
           </li>
           <li class="menu-item">
             <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-cloud-download"></i>
+              <i class="menu-icon tf-icons bx bx-receipt"></i>
               <div>Data Bukti Pembayaran</div>
             </a>
           </li>
