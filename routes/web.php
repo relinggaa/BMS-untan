@@ -2,9 +2,12 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KeyController;
-
-
-
+use App\Http\Controllers\AdministrasiController;
+use App\Http\Controllers\BendaharaController;
+use App\Exports\InvoicesExport;
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Request;
+use App\Http\Controllers\InvoiceController;
 
 Route::get('/', function () {
     return view('pilih-login'); 
@@ -33,8 +36,7 @@ Route::post('/verify-admin', [KeyController::class, 'verifyAdmin'])->name('verif
 
 Route::get('/dashboard-admin', [KeyController::class, 'indexAdmin'])->name('dashboard.admin');
 
-
-
+Route::get('/export-invoices', [InvoiceController::class, 'export'])->name('invoices.export');
 
 Route::get('/login-bendahara', function () {
     return view('login-bendahara'); 
@@ -44,6 +46,12 @@ Route::post('/verify-bendahara', [KeyController::class, 'verifyBendahara'])->nam
 
 
 Route::get('/dashboard-bendahara', [KeyController::class, 'indexBendahara'])->name('dashboard.bendahara');
+Route::get('/administrasi/edit/{id}', [AdministrasiController::class, 'edit'])->name('administrasi.edit');
+Route::post('/administrasi/update/{id}', [AdministrasiController::class, 'update'])->name('administrasi.update');
+Route::delete('/administrasi/{id}', [AdministrasiController::class, 'destroy'])->name('administrasi.destroy');
+
+
+
 
 
 
@@ -63,7 +71,13 @@ Route::post('/verify-pencetak', [KeyController::class, 'verifyPencetak'])->name(
 
 
 Route::get('/dashboard-pencetak', [KeyController::class, 'indexPencetak'])->name('dashboard.pencetak');
+Route::get('/bendahara', [BendaharaController::class, 'index'])->name('bendahara.index');
 
+
+Route::post('/administrasi', [AdministrasiController::class, 'store'])->name('administrasi.store');
+
+
+Route::get('/administrasi/all', [AdministrasiController::class, 'getAll'])->name('administrasi.all');
 
 
 Route::get('/login-pelaporan', function () {
