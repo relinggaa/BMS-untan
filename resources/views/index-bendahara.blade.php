@@ -355,10 +355,10 @@ function filterInvoices() {
     return invoiceDate >= start && invoiceDate <= end;
   });
 
-  // Tampilkan data yang sudah difilter
+
   renderInvoices(filteredInvoices);
 
-  // Update URL untuk export
+
   const exportButton = document.getElementById("exportExcel");
   if (filteredInvoices.length > 0) {
     exportButton.href = `{{ route('invoices.export') }}?start_date=${startDate}&end_date=${endDate}`;
@@ -366,7 +366,6 @@ function filterInvoices() {
   } else {
     exportButton.href = "#";
     exportButton.classList.add("disabled"); 
-    alert("Tidak ada data yang sesuai dengan filter.");
   }
 }
 function editInvoice(id, no_invoice, nama_perusahaan, nama_proyek, permohonan, tanggal_datang, tanggal_pembayaran_va, total_harga, uang_muka, sisa) {
@@ -388,6 +387,13 @@ function editInvoice(id, no_invoice, nama_perusahaan, nama_proyek, permohonan, t
     editModal.show();
 }
 
+function formatDate(dateString) {
+    let date = new Date(dateString);
+    let day = String(date.getDate()).padStart(2, '0');
+    let month = String(date.getMonth() + 1).padStart(2, '0');
+    let year = String(date.getFullYear()).slice(-2); 
+    return `${day}/${month}/${year}`;
+}
 
 
 function renderInvoices(data) {
@@ -403,8 +409,8 @@ function renderInvoices(data) {
           <td>${item.nama_perusahaan}</td>
           <td>${item.nama_proyek}</td>
           <td>${item.permohonan}</td>
-          <td>${item.tanggal_datang}</td>
-          <td>${item.tanggal_pembayaran_va}</td>
+          <td>${formatDate(item.tanggal_datang)}</td> 
+          <td>${formatDate(item.tanggal_pembayaran_va)}</td> 
           <td>${item.total_harga}</td>
           <td>${item.uang_muka}</td>
           <td>${item.sisa}</td>
