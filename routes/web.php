@@ -1,13 +1,14 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KeyController;
-use App\Http\Controllers\AdministrasiController;
-use App\Http\Controllers\BendaharaController;
+use Illuminate\Http\Request;
 use App\Exports\InvoicesExport;
 use Maatwebsite\Excel\Facades\Excel;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KeyController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\KwitansiController;
+use App\Http\Controllers\BendaharaController;
+use App\Http\Controllers\AdministrasiController;
 
 Route::get('/', function () {
     return view('pilih-login'); 
@@ -50,7 +51,10 @@ Route::get('/administrasi/edit/{id}', [AdministrasiController::class, 'edit'])->
 Route::post('/administrasi/update/{id}', [AdministrasiController::class, 'update'])->name('administrasi.update');
 Route::delete('/administrasi/{id}', [AdministrasiController::class, 'destroy'])->name('administrasi.destroy');
 
+Route::get('/kwitansi/all', [KwitansiController::class, 'index']);
+Route::post('/kwitansi/store', [KwitansiController::class, 'store']);
 
+Route::get('/kwitansi/{id}', [KwitansiController::class, 'detail'])->name('kwitansi.detail');
 
 
 

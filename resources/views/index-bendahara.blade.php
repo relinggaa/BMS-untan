@@ -198,7 +198,7 @@
       </div>
   </div>
 </div>
-
+  
       
     </div>
   </div>
@@ -257,7 +257,54 @@
           </form>
         `,
         kas: '<h2>Halaman KAS</h2><p>Konten untuk KAS akan ditambahkan di sini.</p>',
-        kwitansi: '<h2>Halaman Kwitansi</h2><p>Konten untuk Kwitansi akan ditambahkan di sini.</p>',
+        kwitansi: `
+      <h2>Buat Kwitansi</h2>
+      <form id="kwitansiForm" method="POST" action="/kwitansi/store">
+        @csrf
+        <div class="mb-3">
+          <label for="tanggal" class="form-label">Tanggal</label>
+          <input type="date" class="form-control" id="tanggal" name="tanggal" required>
+        </div>
+        <div class="mb-3">
+          <label for="nomor" class="form-label">Nomor</label>
+          <input type="text" class="form-control" id="nomor" name="nomor" required>
+        </div>
+        <div class="mb-3">
+          <label for="terimaDari" class="form-label">Telah Terima Dari</label>
+          <input type="text" class="form-control" id="terimaDari" name="terima_dari" required>
+        </div>
+        <div class="mb-3">
+          <label for="supplier" class="form-label">Supplier</label>
+          <input type="text" class="form-control" id="supplier" name="supplier" required>
+        </div>
+        <div class="mb-3">
+          <label for="proyek" class="form-label">Proyek</label>
+          <input type="text" class="form-control" id="proyek" name="proyek" required>
+        </div>
+        <div class="mb-3">
+          <label for="totalTagihan" class="form-label">Total Tagihan</label>
+          <input type="number" class="form-control" id="totalTagihan" name="total_tagihan" required>
+        </div>
+        <div class="mb-3">
+          <label for="pembayaranDP" class="form-label">Pembayaran DP</label>
+          <input type="number" class="form-control" id="pembayaranDP" name="pembayaran_dp" required>
+        </div>
+        <div class="mb-3">
+          <label for="sisaPembayaran" class="form-label">Sisa Pembayaran</label>
+          <input type="number" class="form-control" id="sisaPembayaran" name="sisa_pembayaran" required>
+        </div>
+        <div class="mb-3">
+          <label for="untukPembayaran" class="form-label">Untuk Pembayaran</label>
+          <textarea class="form-control" id="untukPembayaran" name="untuk_pembayaran" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+      </form>
+
+      <h3 class="mt-4">List Daftar Kwitansi</h3>
+      <div id="listKwitansi">
+        <p>Memuat data...</p>
+      </div>
+    `,
         invoice: `
       <h2>Daftar Invoice</h2>
       <div>
@@ -300,11 +347,45 @@
       </table>
     `,
   };
+  
+  function fetchKwitansi() {
+  fetch("/kwitansi/all")
+    .then(response => response.json())
+    .then(data => {
+      const listKwitansi = document.getElementById("listKwitansi");
+      listKwitansi.innerHTML = "";
+      
+      if (data.length > 0) {
+        data.forEach(kwitansi => {
+        const kwitansiItem = document.createElement("div");
+        kwitansiItem.classList.add("border", "p-2", "mb-2", "cursor-pointer");
+        kwitansiItem.innerHTML = `
+          <strong>${formatDate(kwitansi.tanggal)}</strong><br>
+         
+          <a href="/kwitansi/${kwitansi.id}" class="btn btn-light w-100 text-start">
+            ${kwitansi.nomor} - ${kwitansi.terima_dari}
+          </a>
+        `;
+        listKwitansi.appendChild(kwitansiItem);
+      });
+      } else {
+        listKwitansi.innerHTML = "<p>Tidak ada kwitansi yang tersedia.</p>";
+      }
+    })
+    .catch(error => {
+      console.error("Gagal mengambil data kwitansi:", error);
+      document.getElementById("listKwitansi").innerHTML = "<p>Gagal memuat data.</p>";
+    });
+}
 
   document.getElementById('mainContent').innerHTML = content[page];
 
   if (page === 'invoice') {
     fetchInvoices();
+  }
+  
+  if (page === 'kwitansi') {
+    fetchKwitansi();
   }
   
 }
@@ -340,7 +421,6 @@ function filterInvoices() {
   const startDate = document.getElementById("startDate").value;
   const endDate = document.getElementById("endDate").value;
 
-  // Validasi input tanggal
   if (!startDate || !endDate) {
     alert("Harap pilih rentang tanggal.");
     return;
@@ -380,7 +460,7 @@ function editInvoice(id, no_invoice, nama_perusahaan, nama_proyek, permohonan, t
     document.getElementById("editUangMuka").value = uang_muka;
     document.getElementById("editSisa").value = sisa;
 
-    // Update action form agar sesuai dengan ID invoice
+
     document.getElementById("editInvoiceForm").action = `/administrasi/update/${id}`;
 
     var editModal = new bootstrap.Modal(document.getElementById("editInvoiceModal"));
@@ -472,6 +552,11 @@ function renderInvoices(data) {
  
     alert("Berhasil Menghapus Data ");
     showContent('invoice')
+@endif
+@if (session('success_simpan_kwintasi'))
+ 
+    alert("Berhasil Menyimpan Data ");
+    showContent('kwitansi')
 @endif
 
 
