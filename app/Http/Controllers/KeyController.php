@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Key; 
+use App\Models\Pengujian;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
 class KeyController extends Controller
@@ -15,17 +16,16 @@ class KeyController extends Controller
         ]);
 
         $keyInput = $request->input('key');
-        $defaultKey = '123';
+
 
         $keyData =  Key::where('key', $keyInput)->where('role', 'Kepala Lab')->first();
 
-        if ($keyInput === $defaultKey || $keyData) {
-            session(['login_kepala' => true, 'show_generate_key_menu' => true]);
-            Log::info("Login berhasil dengan key: {$keyInput}.");
-            return redirect()->route('index.kepala', ['menu' => 'generate-key']);
+        if ($keyData) {
+            session(['login_kepala'=>true]);
+            return redirect()->route('dashboard.kepala' );
         }
 
-        Log::warning("Key tidak valid. Key yang dimasukkan: {$keyInput}");
+      
         return redirect()->route('login.kepala')->with('error', 'Key salah.');
     }
     public function verifyAdmin(Request $request)
@@ -206,7 +206,7 @@ class KeyController extends Controller
             'key' => $request->input('key'),
         ]);
 
-        return redirect()->back()->with('success', 'Key berhasil disimpan.');
+        return redirect()->back()->with('success-simpan-key', 'Key berhasil disimpan.');
     }
 
     public function logout(Request $request)
@@ -215,14 +215,8 @@ class KeyController extends Controller
         return redirect()->route('login.kepala')->with('success', 'Logout berhasil.');
     }
 
-    public function indexKepala()
-    {
-        $keys = Key::all();
 
-        $showGenerateKeyMenu = session('show_generate_key_menu', false);
 
-        return view('index-kepala', compact('keys', 'showGenerateKeyMenu'));
-    }
     public function verifyPencetak(Request $request)
     {
         $request->validate([
@@ -256,14 +250,23 @@ class KeyController extends Controller
         Log::info('Session login_pencetak: ' . session('login_pencetak'));
         return view('index-pencetak');
     }
-
+    public function index()
+    {
+        // Retrieve data for keys and pengujian
+        $keys = Key::all();
+        $pengujianData = Pengujian::all();
+    
+        // Return the view with both sets of data
+        return view('index-kepala', compact('keys', 'pengujianData'));
+    }
+    
     public function destroy($id)
     {
         $key = Key::find($id);
 
         if ($key) {
             $key->delete();
-            return redirect()->back()->with('success', 'Key berhasil dihapus.');
+            return redirect()->back()->with('success-hapus-key', 'Key berhasil dihapus.');
         }
 
         return redirect()->back()->with('error', 'Key tidak ditemukan.');
