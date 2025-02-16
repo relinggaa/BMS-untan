@@ -11,7 +11,7 @@ class Invoice extends Model
     protected $fillable = [
         'no_invoice', 'nama_perusahaan', 'nama_proyek', 'permohonan', 
         'tanggal_datang', 'teknisi', 'jenis_material', 'jenis_pengujian',
-        'jumlah', 'jenis_pembayaran', 'bukti_pembayaran'
+        'jumlah', 'jenis_pembayaran', 'bukti_pembayaran','total_biaya'
     ];
 
     protected $casts = [

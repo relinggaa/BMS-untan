@@ -9,6 +9,9 @@
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/theme-default.css" />
   <link rel="stylesheet" href="/dashboard/assets/css/demo.css" />
   <script src="/dashboard/assets/vendor/js/helpers.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
+
 </head>
 
 <style>
@@ -47,7 +50,7 @@
     border: none;
   }
 </style>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
   <!-- Verifikasi Session -->
   @if (!session('login_bendahara'))
@@ -184,84 +187,147 @@ function searchInvoice() {
           </ul>`,
           buatInvoice: `
         <h2>Buat Invoice</h2>
-         <form id="invoiceForm" action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
+     <form id="invoiceForm" action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
-              <label for="no_invoice" class="form-label">Masukan Nomor Invoice</label>
-              <input type="text" class="form-control" id="no_invoice" name="no_invoice" required>
-              <button type="button" class="btn btn-success mt-2" onclick="searchInvoice()">Search</button>
+                <label for="no_invoice" class="form-label">Masukan Nomor Invoice</label>
+                <input type="text" class="form-control" id="no_invoice" name="no_invoice" required>
+                <button type="button" class="btn btn-success mt-2" onclick="searchInvoice()">Search</button>
             </div>
 
             <div class="mb-3">
-              <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
-              <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" required>
+                <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
+                <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" required>
             </div>
 
             <div class="mb-3">
-              <label for="nama_proyek" class="form-label">Nama Proyek</label>
-              <input type="text" class="form-control" id="nama_proyek" name="nama_proyek" required>
+                <label for="nama_proyek" class="form-label">Nama Proyek</label>
+                <input type="text" class="form-control" id="nama_proyek" name="nama_proyek" required>
             </div>
 
             <div class="mb-3">
-              <label for="permohonan" class="form-label">Permohonan</label>
-              <input type="text" class="form-control" id="permohonan" name="permohonan" required>
+                <label for="permohonan" class="form-label">Permohonan</label>
+                <input type="text" class="form-control" id="permohonan" name="permohonan" required>
             </div>
 
             <div class="mb-3">
-              <label for="tanggal_datang" class="form-label">Tanggal Datang</label>
-              <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
+                <label for="tanggal_datang" class="form-label">Tanggal Datang</label>
+                <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
             </div>
 
             <div class="mb-3">
-              <label for="teknisi" class="form-label">Teknisi</label>
-              <select class="form-control" id="teknisi" name="teknisi[]" multiple required>
-
-              </select>
+                <label for="teknisi" class="form-label">Teknisi</label>
+                <select class="form-control" id="teknisi" name="teknisi[]" multiple required>
+                </select>
             </div>
 
-              <div class="mb-3">
-          <label for="jenis_material" class="form-label">Jenis Material</label>
-          <select class="form-control" id="jenis_material" name="jenis_material" required>
-              <option value="">Pilih Jenis Material</option>
-              @foreach ($pengujianData as $item)
-                  <option value="{{ $item->jenis_material }}">{{ $item->jenis_material }}</option>
-              @endforeach
-          </select>
-      </div>
-
-      <div class="mb-3">
-          <label for="jenis_pengujian" class="form-label">Jenis Pengujian</label>
+          <div class="mb-3">
+        <label for="jenis_pengujian" class="form-label">Jenis Pengujian</label>
           <select class="form-control" id="jenis_pengujian" name="jenis_pengujian" required>
-              <option value="">Pilih Jenis Pengujian</option>
-              @foreach ($pengujianData as $item)
-                  <option value="{{ $item->jenis_pengujian }}">{{ $item->jenis_pengujian }} Harga satuan Rp. {{ $item->harga_satuan }}"</option>
-              @endforeach
-          </select>
-</div>
+            <option value="">Pilih Jenis Pengujian</option>
+            @foreach ($pengujianData as $item)
+                <option value="{{ $item->jenis_pengujian }}" data-harga_satuan="{{ $item->harga_satuan }}">
+                    {{ $item->jenis_pengujian }} - Harga Rp. {{ $item->harga_satuan }}
+                </option>
+            @endforeach
+        </select>
+
+    </div>
+
+        <div class="mb-3">
+            <label for="jumlah" class="form-label">Jumlah</label>
+            <input type="number" class="form-control" id="jumlah" name="jumlah" required>
+            <button type="button" class="btn btn-info mt-2" id="hitungBtn">Hitung</button>
+        </div>
+
+        <div class="mb-3">
+            <label for="total_biaya" class="form-label">Total Biaya</label>
+            <input type="text" class="form-control" id="total_biaya" name="total_biaya" readonly>
+        </div>
+
+
 
             <div class="mb-3">
-              <label for="jumlah" class="form-label">Jumlah</label>
-              <input type="number" class="form-control" id="jumlah" name="jumlah" required>
+                <label for="jenis_pembayaran" class="form-label">Jenis Pembayaran</label>
+                <input type="text" class="form-control" id="jenis_pembayaran" name="jenis_pembayaran" required>
             </div>
 
             <div class="mb-3">
-              <label for="jenis_pembayaran" class="form-label">Jenis Pembayaran</label>
-              <input type="text" class="form-control" id="jenis_pembayaran" name="jenis_pembayaran" required>
-            </div>
-
-            <div class="mb-3">
-              <label for="bukti_pembayaran" class="form-label">Bukti Pembayaran</label>
-              <input type="file" class="form-control" id="bukti_pembayaran" name="bukti_pembayaran" required>
+                <label for="bukti_pembayaran" class="form-label">Bukti Pembayaran</label>
+                <input type="file" class="form-control" id="bukti_pembayaran" name="bukti_pembayaran" required>
             </div>
 
             <button type="submit" class="btn btn-primary">Simpan</button>
-          </form>`,
+        </form>`,
         invoice: `<h2>Invoice</h2><p>Daftar Invoice tersedia di sini.</p>`,
         kas: `<h2>Buat KAS</h2><p>Halaman untuk membuat KAS.</p>`,
         kwitansi: `<h2>Buat Kwitansi</h2><p>Halaman untuk membuat Kwitansi.</p>`,
       };
       document.getElementById('mainContent').innerHTML = content[page];
     }
+
+    document.addEventListener('click', function(event) {
+
+    if (event.target && event.target.id === 'hitungBtn') {
+    
+
+       
+        const jenisPengujian = document.getElementById('jenis_pengujian');
+        const jumlah = document.getElementById('jumlah');
+
+        if (!jenisPengujian || !jumlah) {
+
+            return;
+        }
+
+        const jumlahValue = jumlah.value;
+
+        // Pastikan jumlah valid
+        if (jumlahValue === "" || isNaN(jumlahValue) || jumlahValue <= 0) {
+            alert("Jumlah harus berupa angka yang valid.");
+            return;
+        }
+
+        // Ambil elemen option yang dipilih
+        const selectedOption = jenisPengujian.options[jenisPengujian.selectedIndex];
+      
+
+  
+        const hargaSatuan = selectedOption ? selectedOption.getAttribute('data-harga_satuan') : null;
+       
+
+       
+        if (!hargaSatuan) {
+            alert("Pilih jenis pengujian terlebih dahulu.");
+            return;
+        }
+
+
+        const totalBiaya = parseFloat(hargaSatuan) * parseInt(jumlahValue);
+        console.log("Total Biaya: ", totalBiaya); 
+      
+        document.getElementById('total_biaya').value = totalBiaya.toFixed(2);
+    }
+});
+
+
+
+
+
+
+
+    @if (session('success-buat-invoice'))
+            Swal.fire({
+                title: "Invoice Di Buat!",
+                text: "Berhasil menyimpan invoice",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('buatInvoice');
+            });
+        @endif
+
+
   </script>
 
 </body>

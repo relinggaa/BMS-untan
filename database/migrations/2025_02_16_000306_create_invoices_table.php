@@ -24,6 +24,7 @@ return new class extends Migration
         $table->integer('jumlah');
         $table->string('jenis_pembayaran');
         $table->string('bukti_pembayaran');
+        $table->decimal('total_biaya', 10, 2)->nullable(); ; 
         $table->timestamps();
     });
 }
@@ -33,6 +34,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('invoices');
+        Schema::table('invoices', function (Blueprint $table) {
+            $table->dropColumn('total_biaya');
+        });
+    
     }
 };

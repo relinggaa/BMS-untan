@@ -122,7 +122,10 @@ Route::post('/data-administrasi/upload', [DataAdministrasiController::class, 'up
 Route::get('/data-administrasi/files', [DataAdministrasiController::class, 'getFiles'])->name('data.administrasi.files');
 Route::get('/dashboard-bendahara', [DataAdministrasiController::class, 'indexBendahara'])->name('dashboard.bendahara');
 Route::get('/data-pelanggan-bendahara/{no_invoice}', [DataPelangganController::class, 'findByInvoice'])->name('data.pelanggan.findByInvoice');
+
+
 Route::post('/invoice', [InvoiceController::class, 'store'])->name('invoice.store');
+
 Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
 
 
