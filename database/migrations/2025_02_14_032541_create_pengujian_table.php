@@ -18,7 +18,6 @@ class CreatePengujianTable extends Migration
             $table->string('jenis_material');
             $table->string('jenis_pengujian');
             $table->decimal('harga_satuan', 15, 2);
-            $table->decimal('total_biaya', 15, 2);
             $table->timestamps();
         });
     }

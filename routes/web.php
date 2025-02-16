@@ -2,14 +2,15 @@
 
 use Illuminate\Http\Request;
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KeyController;
-use App\Http\Controllers\PengujianController;
-use App\Http\Controllers\BendaharaController;
-use App\Http\Controllers\DataAdministrasiController;
-use App\Http\Controllers\DataPelangganController;
 use App\Exports\InvoicesExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KeyController;
+use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\BendaharaController;
+use App\Http\Controllers\PengujianController;
+use App\Http\Controllers\DataPelangganController;
+use App\Http\Controllers\DataAdministrasiController;
 Route::get('/', function () {
     return view('pilih-login'); 
 })->name('pilih.login');
@@ -106,18 +107,27 @@ Route::get('/dashboard-penyelia', [KeyController::class, 'indexPenyelia'])->name
 
 Route::get('/pengujian/create', [PengujianController::class, 'create'])->name('pengujian.create');  
 Route::post('/pengujian', [PengujianController::class, 'store'])->name('pengujian.store');  
-Route::get('/pengujian/{id}/edit', [PengujianController::class, 'edit'])->name('pengujian.edit'); 
+Route::get('/pengujian/{id}/edit', [PengujianController::class, 'edit'])->name('pengujian.edit');
+
 Route::put('/pengujian/{id}', [PengujianController::class, 'update'])->name('pengujian.update');
 
 Route::delete('/pengujian/{id}', [PengujianController::class, 'destroy'])->name('pengujian.destroy'); 
 
 
 Route::get('/dashboard-admin', [DataAdministrasiController::class, 'showForm'])->name('dashboard.admin');
-Route::get('/data-pelanggan', [DataPelangganController::class, 'index'])->name('data.pelanggan.index');
+Route::get('/data-pelanggan', [DataAdministrasiController::class, 'showForm'])->name('data.pelanggan.index');
 Route::post('/data-pelanggan/store', [DataPelangganController::class, 'store'])->name('data.pelanggan.store');
 Route::get('/data-pelanggan/filter', [DataAdministrasiController::class, 'filter'])->name('data.pelanggan.filter');
 Route::post('/data-administrasi/upload', [DataAdministrasiController::class, 'upload'])->name('data.administrasi.upload');
 Route::get('/data-administrasi/files', [DataAdministrasiController::class, 'getFiles'])->name('data.administrasi.files');
+Route::get('/dashboard-bendahara', [DataAdministrasiController::class, 'indexBendahara'])->name('dashboard.bendahara');
+Route::get('/data-pelanggan-bendahara/{no_invoice}', [DataPelangganController::class, 'findByInvoice'])->name('data.pelanggan.findByInvoice');
+Route::post('/invoice', [InvoiceController::class, 'store'])->name('invoice.store');
+Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
+
+
+
+
 
 
 Route::get('/login-penyelia', function () {
@@ -127,3 +137,11 @@ Route::post('/logout', [KeyController::class, 'logout'])->name('logout');
 
 Route::get('/keys', [KeyController::class, 'index'])->name('keys.index');
 Route::delete('/keys/{id}', [KeyController::class, 'destroy'])->name('keys.destroy');
+// Route untuk edit
+Route::get('/data-pelanggan/{id}/edit', [DataPelangganController::class, 'edit'])->name('data.pelanggan.edit');
+Route::delete('/data-pelanggan/{id}', [DataPelangganController::class, 'destroy'])->name('data.pelanggan.destroy');
+
+// Route untuk update
+Route::put('/data-pelanggan/{id}', [DataPelangganController::class, 'update'])->name('data.pelanggan.update');
+Route::post('/data-pelanggan/{id}/send-to-bendahara', [DataPelangganController::class, 'sendToBendahara'])->name('data.pelanggan.sendToBendahara');
+Route::post('/data-pelanggan/{id}/send-to-teknisi', [DataPelangganController::class, 'sendToTeknisi'])->name('data.pelanggan.sendToTeknisi');

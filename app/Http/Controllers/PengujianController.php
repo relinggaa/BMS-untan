@@ -32,7 +32,17 @@ class PengujianController extends Controller
         return redirect()->route('dashboard.kepala')->with('success-simpan-pengujian', 'Data Pengujian berhasil disimpan!');
     }
     
-
+    public function edit($id)
+    {
+        $pengujian = Pengujian::findOrFail($id);
+        
+        return response()->json([
+            'jenis_material' => $pengujian->jenis_material,
+            'jenis_pengujian' => $pengujian->jenis_pengujian,
+            'harga_satuan' => $pengujian->harga_satuan
+        ]);
+    }
+    
 
     public function destroy($id)
     {
@@ -57,5 +67,14 @@ class PengujianController extends Controller
 
     return redirect()->route('dashboard.kepala')->with('success-edit-pengujian', 'Pengujian berhasil diperbarui!');
 }
+// Controller Method
+public function createInvoiceForm()
+{
+    // Ambil data untuk dropdown dari tabel Pengujian
+    $pengujianData = Pengujian::all(); // Menyaring semua data
+
+    return view('index-bendahara', compact('pengujianData'));
+}
+
 
 }

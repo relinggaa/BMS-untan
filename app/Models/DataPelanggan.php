@@ -11,4 +11,14 @@ class DataPelanggan extends Model
     protected $fillable = [
         'no_invoice', 'nama_perusahaan', 'nama_proyek', 'permohonan', 'tanggal_datang', 'teknisi'
     ];
-}
+            public function sendToBendahara()
+                {
+                    return $this->hasOne(DataPelangganBendahara::class);
+                }
+
+            public function sendToTeknisi()
+                {
+                    return $this->hasOne(DataPelangganTeknisi::class);
+                }
+
+        }

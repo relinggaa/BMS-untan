@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/core.css" />
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/theme-default.css" />
   <link rel="stylesheet" href="/dashboard/assets/css/demo.css" />
+  <!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
   <script src="/dashboard/assets/vendor/js/helpers.js"></script>
 </head>
 <style>
@@ -65,7 +68,23 @@
   input[name="_method"] {
     display: none;
   }
+  
+  @media print {
+    button, form {
+        display: none !important;
+    }
+}
+@media print {
+    .table button {
+        display: none !important;
+    }
+}
+
+
 </style>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <body>
   <!-- Verifikasi Session -->
   @if (!session('login_admin'))
@@ -133,6 +152,57 @@
       <div class="flex-grow-1 p-3" id="mainContent">
         <h1>Selamat Datang di Halaman Admin</h1>
       </div>
+      <!-- Modal Edit Pelanggan -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editModalLabel">Edit Data Pelanggan</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editForm" method="POST">
+          @csrf
+          <input type="hidden" name="_method" value="PUT">
+          <div class="mb-3">
+            <label for="edit_no_invoice" class="form-label">No Invoice</label>
+            <input type="text" class="form-control" id="edit_no_invoice" name="no_invoice" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit_nama_perusahaan" class="form-label">Nama Perusahaan</label>
+            <input type="text" class="form-control" id="edit_nama_perusahaan" name="nama_perusahaan" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit_nama_proyek" class="form-label">Nama Proyek</label>
+            <input type="text" class="form-control" id="edit_nama_proyek" name="nama_proyek" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit_permohonan" class="form-label">Permohonan</label>
+            <input type="text" class="form-control" id="edit_permohonan" name="permohonan" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit_tanggal_datang" class="form-label">Tanggal Datang</label>
+            <input type="date" class="form-control" id="edit_tanggal_datang" name="tanggal_datang" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit_teknisi" class="form-label">Teknisi</label>
+            <select class="form-control" id="edit_teknisi" name="teknisi[]" multiple required>
+              <option value="TEKNISI A">TEKNISI A</option>
+              <option value="TEKNISI B">TEKNISI B</option>
+              <option value="TEKNISI C">TEKNISI C</option>
+              <option value="TEKNISI D">TEKNISI D</option>
+              <option value="TEKNISI E">TEKNISI E</option>
+              <option value="TEKNISI F">TEKNISI F</option>
+              <option value="TEKNISI G">TEKNISI G</option>
+              <option value="TEKNISI H">TEKNISI H</option>
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
     </div>
   </div>
@@ -159,6 +229,69 @@
     }
 
 });
+function openEditModal(id) {
+    fetch(`/data-pelanggan/${id}/edit`)
+        .then(response => response.json())
+        .then(data => {
+            // Set values untuk form fields
+            document.getElementById('edit_no_invoice').value = data.no_invoice;
+            document.getElementById('edit_nama_perusahaan').value = data.nama_perusahaan;
+            document.getElementById('edit_nama_proyek').value = data.nama_proyek;
+            document.getElementById('edit_permohonan').value = data.permohonan;
+            document.getElementById('edit_tanggal_datang').value = data.tanggal_datang;
+
+            // Menangani multiple select (Teknisi)
+            let teknisiOptions = document.getElementById('edit_teknisi').options;
+            let selectedTeknisi = data.teknisi.split(',');  // Jika teknisi disimpan sebagai string yang dipisah koma
+            for (let option of teknisiOptions) {
+                option.selected = selectedTeknisi.includes(option.value);
+            }
+
+            // Set action URL untuk form
+            document.getElementById('editForm').action = `/data-pelanggan/${id}`;
+
+            // Buka modal setelah mengisi form
+            $('#editModal').modal('show');
+        })
+        .catch(error => console.error('Error fetching data:', error));
+}
+
+
+function printTable() {
+    var table = document.querySelector(".table"); 
+
+
+    var tableClone = table.cloneNode(true);
+    tableClone.querySelectorAll("td.actions, th.actions, td button").forEach(element => element.remove());
+
+
+    var newWindow = window.open("", "", "width=900,height=600");
+    newWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Data Pelanggan</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            <h2>Data Pelanggan</h2>
+            ${tableClone.outerHTML} <!-- Copy tabel tanpa tombol -->
+            <script>
+                window.onload = function() {
+                    window.print();
+                    window.onafterprint = function() { window.close(); };
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
+}
+
 
     function showContent(page) {
       const content = {
@@ -178,9 +311,9 @@
         </form>
 
         <!-- Menampilkan pesan sukses jika file berhasil di-upload -->
-        @if (session('success'))
+        @if (session('success-mengupload-file'))
             <div class="alert alert-success mt-3">
-                {{ session('success') }}
+                <p>Berhasil Mengupload File</p>
             </div>
         @endif
 
@@ -231,18 +364,17 @@
                 </div>
                <div class="mb-3">
     <label for="teknisi" class="form-label">Teknisi</label>
-    <select class="form-control" id="teknisi" name="teknisi" required>
-        <option value="" disabled selected>Pilih Teknisi</option>
-        <option value="TEKNISI A">TEKNISI A</option>
-        <option value="TEKNISI B">TEKNISI B</option>
-        <option value="TEKNISI C">TEKNISI C</option>
-        <option value="TEKNISI D">TEKNISI D</option>
-        <option value="TEKNISI E">TEKNISI E</option>
-        <option value="TEKNISI F">TEKNISI F</option>
-        <option value="TEKNISI G">TEKNISI G</option>
-        <option value="TEKNISI H">TEKNISI H</option>
+<select class="form-control" id="teknisi" name="teknisi[]" multiple required>
+  <option value="TEKNISI A">TEKNISI A</option>
+  <option value="TEKNISI B">TEKNISI B</option>
+  <option value="TEKNISI C">TEKNISI C</option>
+  <option value="TEKNISI D">TEKNISI D</option>
+  <option value="TEKNISI E">TEKNISI E</option>
+  <option value="TEKNISI F">TEKNISI F</option>
+  <option value="TEKNISI G">TEKNISI G</option>
+  <option value="TEKNISI H">TEKNISI H</option>
+</select>
 
-    </select>
 </div>
 
                 <button type="submit" class="btn btn-primary">Tambah Data</button>
@@ -266,13 +398,18 @@
                       </div>
                   </div>
               </form>
-                  <form action="{{ url('data-pelanggan/export') }}" method="GET">
+              <div class="d-flex">
+                            <form action="{{ url('data-pelanggan/export') }}" method="GET">
                            <input type="hidden" name="start_date" value="{{ request('start_date') }}">
     <input type="hidden" name="end_date" value="{{ request('end_date') }}">
     <button type="submit" class="btn btn-success {{ !request('start_date') || !request('end_date') ? 'disabled' : '' }}">
         Export to Excel
     </button>
+  
 </form>
+  <button onclick="printTable()" class="btn btn-primary ms-2">Print</button>
+                </div>
+        
 <table class="table table-striped">
     <thead>
         <tr>
@@ -283,6 +420,7 @@
             <th>Permohonan</th>
             <th>Tanggal Datang</th>
             <th>Teknisi</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -295,10 +433,55 @@
                 <td>{{ $item->permohonan }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal_datang)->format('d M Y') }}</td>
                 <td>{{ $item->teknisi }}</td>
+               <td>
+    <!-- Dropdown Menu for Actions -->
+    <div class="dropdown">
+        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="actionDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bx bx-dots-vertical-rounded"></i> <!-- Hamburger Icon -->
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="actionDropdown">
+            <li>
+                <!-- Send to Bendahara -->
+                <form action="{{ route('data.pelanggan.sendToBendahara', $item->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="dropdown-item" {{ $item->sent_to_bendahara ? 'disabled' : '' }}>Kirim Bendahara</button>
+                </form>
+            </li>
+            <li>
+                <!-- Send to Teknisi -->
+                <form action="{{ route('data.pelanggan.sendToTeknisi', $item->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class="dropdown-item" {{ $item->sent_to_teknisi ? 'disabled' : '' }}>Kirim Teknisi</button>
+                </form>
+            </li>
+            <li>
+                <!-- Edit Button -->
+                <button type="button" class="dropdown-item {{ $item->sent_to_bendahara || $item->sent_to_teknisi ? 'disabled' : '' }}" onclick="openEditModal({{ $item->id }})">Edit</button>
+            </li>
+            <li>
+                <!-- Delete Button -->
+                <form action="{{ route('data.pelanggan.destroy', $item->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="dropdown-item {{ $item->sent_to_bendahara || $item->sent_to_teknisi ? 'disabled' : '' }}">Hapus</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</td>
+
+                
+                   
+          
+
+
+               
             </tr>
         @endforeach
     </tbody>
 </table>
+
+
 
           </div>
         `,
@@ -307,18 +490,84 @@
       document.getElementById('mainContent').innerHTML = content[page];
 
     }
-    @if (session('success-simpan-pelanggan'))
-    alert("Berhasil Menyimpan Pelanggan ");
-    showContent('dataPelanggan');
-@endif
-    @if (session('success-mengupload-file'))
-    alert("Berhasil Menguploadfile ");
-    showContent('dataAdministrasi');
-@endif
-    @if (session(key: 'filter-tanggal'))
-    alert("Menfilter Tanggal")
-    showContent('dataPelanggan');
-@endif
+    document.addEventListener("DOMContentLoaded", function() {
+        @if (session('success-simpan-pelanggan'))
+            Swal.fire({
+                title: "Sukses!",
+                text: "Berhasil Menyimpan Pelanggan",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('dataPelanggan');
+            });
+        @endif
+
+        @if (session('success-mengupload-file'))
+            Swal.fire({
+                title: "Sukses!",
+                text: "File berhasil diunggah",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('dataAdministrasi');
+            });
+        @endif
+
+        @if (session('filter-tanggal'))
+            Swal.fire({
+                title: "Filter Tanggal",
+                text: "Menampilkan data berdasarkan rentang tanggal yang dipilih",
+                icon: "info",
+                confirmButtonColor: "#007bff",
+            }).then(() => {
+                showContent('dataPelanggan');
+            });
+        @endif
+
+        @if (session('success-hapus-pelanggan'))
+            Swal.fire({
+                title: "Data Terhapus",
+                text: "Pelanggan berhasil dihapus",
+                icon: "warning",
+                confirmButtonColor: "#dc3545",
+            }).then(() => {
+                showContent('dataPelanggan');
+            });
+        @endif
+
+        @if (session('success-edit-pelanggan'))
+            Swal.fire({
+                title: "Edit Berhasil",
+                text: "Data pelanggan telah diperbarui",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('dataPelanggan');
+            });
+        @endif
+
+        @if (session('success-kirim-teknisi'))
+            Swal.fire({
+                title: "Terkirim!",
+                text: "Data berhasil dikirim ke teknisi",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('dataPelanggan');
+            });
+        @endif
+
+        @if (session('success-kirim-bendahara'))
+            Swal.fire({
+                title: "Terkirim!",
+                text: "Data berhasil dikirim ke bendahara",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('dataPelanggan');
+            });
+        @endif
+    });
 
   </script>
 </body>

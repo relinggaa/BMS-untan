@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Pengujian;
 use Illuminate\Http\Request;
 use App\Models\DataPelanggan;
 use App\Models\DataAdministrasi;
@@ -19,29 +20,44 @@ class DataAdministrasiController extends Controller
       
         $files = DataAdministrasi::orderBy('created_at', 'desc')->get();
         $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
-    
+        
      
         return view('index-admin', compact('files', 'pelanggan'));
     }
-    
-
-    public function upload(Request $request)
+    public function indexBendahara()
     {
    
+        $files = DataAdministrasi::orderBy('created_at', 'desc')->get();
+        $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
+        $pengujianData = Pengujian::all(); // Mengambil semua data pengujian
+        
+    
+        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData'));
+    }
+    
+    public function upload(Request $request)
+    {
         $request->validate([
             'file' => 'required|mimes:pdf|max:10240', 
         ]);
-
-  
-        $filePath = $request->file('file')->storeAs('data_administrasi', time() . '_' . $request->file('file')->getClientOriginalName(), 'public');
-
-      
-        DataAdministrasi::create([
-            'file_path' => $filePath
-        ]);
-
-        return redirect()->back()->with('success-mengupload-file', 'File berhasil di-upload!');
+    
+        if ($request->hasFile('file')) {
+            $file = $request->file('file');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $filePath = $file->storeAs('data_administrasi', $filename, 'public');
+    
+            // Simpan ke database
+            DataAdministrasi::create([
+                'name' => pathinfo($filename, PATHINFO_FILENAME), 
+                'file_path' => $filePath,
+            ]);
+    
+            return back()->with('success-mengupload-file', 'File berhasil diunggah.');
+        }
+    
+        return back()->with('error', 'Gagal mengunggah file.');
     }
+    
     public function filter(Request $request)
     {
         $start_date = $request->input('start_date');

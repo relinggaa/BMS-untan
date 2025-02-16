@@ -8,6 +8,9 @@
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/core.css" />
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/theme-default.css" />
   <link rel="stylesheet" href="/dashboard/assets/css/demo.css" />
+  <!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+
   <script src="/dashboard/assets/vendor/js/helpers.js"></script>
 </head>
 <style>
@@ -67,6 +70,9 @@
     }
 
 </style>
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <body>
   <!-- Verifikasi Session -->
   @if (!session('login_kepala'))
@@ -295,10 +301,12 @@
                     <td>{{ $data->jenis_material }}</td>
                     <td>{{ $data->jenis_pengujian }}</td>
                     <td>{{ $data->harga_satuan }}</td>
+              
                     <td>
-                        <!-- Edit Button: Trigger JavaScript to pre-fill the form -->
-                     <a href="{{ url('/data-pelanggan/' . $pelanggan->id) }}">Edit</a>
+                   <button class="btn btn-warning btn-sm" onclick="editPengujian({{ $data->id }})">Edit</button>
 
+
+                      
 
                         <!-- Delete Form: Separate form for deletion -->
                         <form action="{{ route('pengujian.destroy', $data->id) }}" method="POST" style="display:inline;">
@@ -333,47 +341,90 @@
           }
           return result;
     }
-    function editPengujian(id, jenisMaterial, jenisPengujian, hargaSatuan) {
-        // Populate the form with the data from the selected record
-        document.getElementById('jenisMaterial').value = jenisMaterial;
-        document.getElementById('jenisPengujian').value = jenisPengujian;
-        document.getElementById('hargaSatuan').value = hargaSatuan;
+    function editPengujian(id) {
+    // Send an AJAX GET request to fetch the data for the given 'id'
+    $.ajax({
+        url: '/pengujian/' + id + '/edit',
+        method: 'GET',
+        success: function(response) {
+            // Populate the form with the data received from the server
+            $('#jenisMaterial').val(response.jenis_material);
+            $('#jenisPengujian').val(response.jenis_pengujian);
+            $('#hargaSatuan').val(response.harga_satuan);
 
-        // Change the form action to point to the correct PUT route for updating the record
-        const form = document.getElementById('pengujianForm');
-        form.action = '/pengujian/' + id;  // Use the correct route for update
-        document.querySelector('button[type="submit"]').innerText = 'Update'; // Optionally change button text to 'Update'
+            // Change the form action to the update route and method to PUT
+            const form = $('#pengujianForm');
+            form.attr('action', '/pengujian/' + id);
+            form.attr('method', 'POST'); // Change the method to POST for sending data
+            form.find('[name="_method"]').val('PUT');  // Add PUT method field
+            
+            // Change the submit button text to "Update"
+            form.find('button[type="submit"]').text('Update');
+        },
+        error: function(xhr, status, error) {
+            alert('Error fetching data for editing!');
+        }
+    });
+}
 
-        // Set the method to PUT for update
-        document.querySelector('form').setAttribute('method', 'POST');
-        const methodInput = document.createElement('input');
-        methodInput.setAttribute('name', '_method');
-        methodInput.setAttribute('value', 'PUT');
-        form.appendChild(methodInput);
-    }
 
 
+    document.addEventListener("DOMContentLoaded", function() {
+        @if (session('success-hapus-key'))
+            Swal.fire({
+                title: "Key Terhapus!",
+                text: "Berhasil menghapus key",
+                icon: "warning",
+                confirmButtonColor: "#dc3545",
+            }).then(() => {
+                showContent('generateKey');
+            });
+        @endif
 
-    @if (session('success-hapus-key'))
-    alert("Berhasil Menghapus Key ");
-    showContent('generateKey');
-@endif
-    @if (session('success-simpan-key'))
-    alert("Berhasil Menyimpan Key ");
-    showContent('generateKey');
-@endif
-    @if (session('success-simpan-pengujian'))
-    alert("Berhasil Menyimpan Pengujian ");
-    showContent('dataPengujian');
-@endif
-    @if (session('success-hapus-pengujian'))
-    alert("Berhasil Menghapus Pengujian ");
-    showContent('dataPengujian');
-@endif
-    @if (session('success-edit-pengujian'))
-    alert("Berhasil Mengedit Pengujian ");
-    showContent('dataPengujian');
-@endif
+        @if (session('success-simpan-key'))
+            Swal.fire({
+                title: "Key Disimpan!",
+                text: "Berhasil menyimpan key",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('generateKey');
+            });
+        @endif
+
+        @if (session('success-simpan-pengujian'))
+            Swal.fire({
+                title: "Pengujian Disimpan!",
+                text: "Berhasil menyimpan data pengujian",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('dataPengujian');
+            });
+        @endif
+
+        @if (session('success-hapus-pengujian'))
+            Swal.fire({
+                title: "Pengujian Terhapus!",
+                text: "Data pengujian berhasil dihapus",
+                icon: "warning",
+                confirmButtonColor: "#dc3545",
+            }).then(() => {
+                showContent('dataPengujian');
+            });
+        @endif
+
+        @if (session('success-edit-pengujian'))
+            Swal.fire({
+                title: "Pengujian Diperbarui!",
+                text: "Data pengujian telah diperbarui",
+                icon: "info",
+                confirmButtonColor: "#007bff",
+            }).then(() => {
+                showContent('dataPengujian');
+            });
+        @endif
+    });
   </script>
 </body>
 </html>

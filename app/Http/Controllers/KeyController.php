@@ -252,11 +252,11 @@ class KeyController extends Controller
     }
     public function index()
     {
-        // Retrieve data for keys and pengujian
+       
         $keys = Key::all();
         $pengujianData = Pengujian::all();
     
-        // Return the view with both sets of data
+     
         return view('index-kepala', compact('keys', 'pengujianData'));
     }
     
