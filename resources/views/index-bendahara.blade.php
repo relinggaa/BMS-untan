@@ -111,6 +111,20 @@
           </li>
         </ul>
       </aside>
+            <!-- Modal -->
+      <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Bukti Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" class="img-fluid" alt="Bukti Pembayaran" />
+                </div>
+            </div>
+        </div>
+      </div>
 
       <!-- Main Content -->
       <div class="flex-grow-1 p-3" id="mainContent">
@@ -127,35 +141,33 @@
   <script src="/dashboard/assets/vendor/js/menu.js"></script>
   <script src="/dashboard/assets/js/main.js"></script>
 
-  <!-- JavaScript untuk Navigasi -->
+
   <script>
 function searchInvoice() {
     const noInvoice = document.getElementById('no_invoice').value;
 
-    // Fetch data pelanggan bendahara berdasarkan nomor invoice
+
     fetch(`/data-pelanggan-bendahara/${noInvoice}`)
         .then(response => response.json())
         .then(data => {
             if (data) {
-                // If data is found, fill the form with the returned data
+           
                 document.getElementById('nama_perusahaan').value = data.nama_perusahaan;
                 document.getElementById('nama_proyek').value = data.nama_proyek;
                 document.getElementById('permohonan').value = data.permohonan;
                 document.getElementById('tanggal_datang').value = data.tanggal_datang;
 
-                // Fill the 'Teknisi' multi-select field
                 let teknisiSelect = document.getElementById('teknisi');
-                teknisiSelect.innerHTML = ''; // Clear any existing options
+                teknisiSelect.innerHTML = ''; 
 
-                // Split the teknisi data into an array (assuming it's stored as a string like "TEKNISI A, TEKNISI B")
+     
                 let teknisiList = data.teknisi.split(',');
 
-                // Loop through each teknisi and create an option element
                 teknisiList.forEach(teknisi => {
                     let option = document.createElement("option");
-                    option.value = teknisi.trim();  // Remove extra spaces
+                    option.value = teknisi.trim();  
                     option.text = teknisi.trim();
-                    option.selected = true;  // Automatically select each teknisi
+                    option.selected = true;  
                     teknisiSelect.appendChild(option);
                 });
 
@@ -164,6 +176,10 @@ function searchInvoice() {
             }
         })
         .catch(error => console.error('Error fetching invoice:', error));
+}
+function showImage(imageUrl) {
+  
+    document.getElementById('modalImage').src = imageUrl;
 }
 
 
@@ -204,6 +220,7 @@ function searchInvoice() {
                 <label for="nama_proyek" class="form-label">Nama Proyek</label>
                 <input type="text" class="form-control" id="nama_proyek" name="nama_proyek" required>
             </div>
+            
 
             <div class="mb-3">
                 <label for="permohonan" class="form-label">Permohonan</label>
@@ -220,7 +237,19 @@ function searchInvoice() {
                 <select class="form-control" id="teknisi" name="teknisi[]" multiple required>
                 </select>
             </div>
+               <div class="mb-3">
+        <label for="jenis_material" class="form-label">Jenis Material</label>
+          <select class="form-control" id="jenis_material" name="jenis_material" required>
+            <option value="">Pilih Jenis Material</option>
+            @foreach ($pengujianData as $item)
+                <option value="{{ $item->jenis_material }}">
+                    {{ $item->jenis_material }} 
+                </option>
+            @endforeach
+        </select>
 
+    </div>
+   
           <div class="mb-3">
         <label for="jenis_pengujian" class="form-label">Jenis Pengujian</label>
           <select class="form-control" id="jenis_pengujian" name="jenis_pengujian" required>
@@ -233,7 +262,7 @@ function searchInvoice() {
         </select>
 
     </div>
-
+         
         <div class="mb-3">
             <label for="jumlah" class="form-label">Jumlah</label>
             <input type="number" class="form-control" id="jumlah" name="jumlah" required>
@@ -259,7 +288,56 @@ function searchInvoice() {
 
             <button type="submit" class="btn btn-primary">Simpan</button>
         </form>`,
-        invoice: `<h2>Invoice</h2><p>Daftar Invoice tersedia di sini.</p>`,
+        invoice: `<h2>Invoice</h2>
+        
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>No Invoice</th>
+                <th>Nama Perusahaan</th>
+                <th>Nama Proyek</th>
+                 <th>Permohonan</th>
+                 <th>Tanggal Datang</th>
+                 <th>Jenis Material</th>
+                  <th>Jenis Pengujian</th>
+                  <th>Jenis Pembayaran</th>
+                <th>Teknisi</th>
+                <th>Total Biaya</th>
+                <th>Jumlah</th>
+               
+                <th>Bukti Pembayaran</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($invoices as $invoice)
+                <tr>
+                    <td>{{ $invoice->no_invoice }}</td>
+                    <td>{{ $invoice->nama_perusahaan }}</td>
+                    <td>{{ $invoice->nama_proyek }}</td>
+                    <td>{{ $invoice->permohonan }}</td>
+                    <td>{{ $invoice->tanggal_datang }}</td>
+                    <td>{{ $invoice->jenis_material }}</td>
+                    <td>{{ $invoice->jenis_pengujian }}</td>
+                    <td>{{ $invoice->jenis_pembayaran }}</td>
+                 
+                    <td>{{ $invoice->teknisi }}</td>
+                    <td>Rp. {{ number_format($invoice->total_biaya, 2) }}</td>
+                   <td>{{ $invoice->jumlah }}</td>
+                  <td>
+                        @if($invoice->bukti_pembayaran)
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImage('{{ asset('storage/' . $invoice->bukti_pembayaran) }}')">
+                                <img src="{{ asset('storage/' . $invoice->bukti_pembayaran) }}" alt="Bukti Pembayaran" width="100" />
+                            </a>
+                        @else
+                            <span>No Image</span>
+                        @endif
+                  </td>
+
+                </tr>
+            @endforeach
+        </tbody>
+    </table>`,
         kas: `<h2>Buat KAS</h2><p>Halaman untuk membuat KAS.</p>`,
         kwitansi: `<h2>Buat Kwitansi</h2><p>Halaman untuk membuat Kwitansi.</p>`,
       };
@@ -282,7 +360,7 @@ function searchInvoice() {
 
         const jumlahValue = jumlah.value;
 
-        // Pastikan jumlah valid
+    
         if (jumlahValue === "" || isNaN(jumlahValue) || jumlahValue <= 0) {
             alert("Jumlah harus berupa angka yang valid.");
             return;

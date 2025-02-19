@@ -10,7 +10,8 @@ class InvoiceController extends Controller
 {
     public function store(Request $request)
     {
-        // Validate the incoming request
+  
+     
         $request->validate([
             'no_invoice' => 'required|unique:invoices',
             'nama_perusahaan' => 'required',
@@ -21,13 +22,12 @@ class InvoiceController extends Controller
             'jumlah' => 'required|numeric',
             'jenis_pembayaran' => 'required',
             'bukti_pembayaran' => 'required|file',
-            'total_biaya' => 'required|numeric', // Validate total biaya field
+            'total_biaya' => 'required|numeric',
         ]);
     
-        // Convert teknisi array to comma-separated string
         $teknisiString = implode(',', $request->teknisi);
     
-        // Create the invoice record
+     
         $invoice = Invoice::create([
             'no_invoice' => $request->no_invoice,
             'nama_perusahaan' => $request->nama_perusahaan,

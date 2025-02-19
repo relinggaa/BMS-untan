@@ -3,7 +3,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Support\Facades\Log;
 class Invoice extends Model
 {
     use HasFactory;
@@ -15,6 +15,15 @@ class Invoice extends Model
     ];
 
     protected $casts = [
-        'teknisi' => 'array', // This will automatically handle the array-to-string conversion
+        'teknisi' => 'array', 
     ];
+    protected static function boot()
+{
+    parent::boot();
+
+    static::creating(function ($invoice) {
+        Log::info('Creating invoice with teknisi: ', [$invoice->teknisi]);
+    });
+}
+
 }

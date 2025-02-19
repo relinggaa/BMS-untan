@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Pengujian;
 use Illuminate\Http\Request;
 use App\Models\DataPelanggan;
@@ -20,19 +21,20 @@ class DataAdministrasiController extends Controller
       
         $files = DataAdministrasi::orderBy('created_at', 'desc')->get();
         $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
-        
+        $invoices = Invoice::orderBy('created_at', 'desc')->get();
      
-        return view('index-admin', compact('files', 'pelanggan'));
+        return view('index-bendahara', compact('files', 'pelanggan', 'invoices'));
     }
     public function indexBendahara()
     {
-   
+        
         $files = DataAdministrasi::orderBy('created_at', 'desc')->get();
         $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
-        $pengujianData = Pengujian::all(); // Mengambil semua data pengujian
+        $pengujianData = Pengujian::all(); 
+        $invoices = Invoice::orderBy('created_at', 'desc')->get();
         
     
-        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData'));
+        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData','invoices'));
     }
     
     public function upload(Request $request)
@@ -46,7 +48,6 @@ class DataAdministrasiController extends Controller
             $filename = time() . '_' . $file->getClientOriginalName();
             $filePath = $file->storeAs('data_administrasi', $filename, 'public');
     
-            // Simpan ke database
             DataAdministrasi::create([
                 'name' => pathinfo($filename, PATHINFO_FILENAME), 
                 'file_path' => $filePath,
