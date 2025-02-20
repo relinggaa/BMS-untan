@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kas;
 use App\Models\Invoice;
 use App\Models\Pengujian;
 use Illuminate\Http\Request;
@@ -70,11 +71,11 @@ class InvoiceController extends Controller
     
 
         $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
-
+        $kasData = Kas::whereBetween('tanggal', [$startDate, $endDate])->get();
         $pengujianData = Pengujian::all();
     
      
-        return view('index-bendahara', compact('invoices', 'files', 'pelanggan', 'pengujianData'))
+        return view('index-bendahara', compact('invoices', 'files', 'pelanggan', 'pengujianData','kasData'))
                ->with('filter-tanggal', 'filter-tanggal-invoice');
     }
         public function exportInvoice(Request $request)

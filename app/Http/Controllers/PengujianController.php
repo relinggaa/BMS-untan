@@ -70,8 +70,8 @@ class PengujianController extends Controller
 // Controller Method
 public function createInvoiceForm()
 {
-    // Ambil data untuk dropdown dari tabel Pengujian
-    $pengujianData = Pengujian::all(); // Menyaring semua data
+ 
+    $pengujianData = Pengujian::all(); 
 
     return view('index-bendahara', compact('pengujianData'));
 }

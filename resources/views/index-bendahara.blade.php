@@ -135,6 +135,60 @@
 
     </div>
   </div>
+<!-- Modal Edit Kas -->
+<div class="modal fade" id="editKasModal" tabindex="-1" aria-labelledby="editKasModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editKasModalLabel">Edit Kas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editKasForm" method="POST" action="">
+          @csrf
+          @method('PUT')
+          
+          <!-- Kas ID hidden field -->
+          <input type="hidden" id="kasId" name="kasId">
+
+          <div class="mb-3">
+            <label for="no_bukti" class="form-label">No Bukti</label>
+            <input type="text" class="form-control" id="no_bukti_edit" name="no_bukti" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="tanggal" class="form-label">Tanggal</label>
+            <input type="date" class="form-control" id="tanggal_edit" name="tanggal" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="nama_kegiatan" class="form-label">Nama Kegiatan</label>
+            <input type="text" class="form-control" id="nama_kegiatan_edit" name="nama_kegiatan" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
+            <input type="text" class="form-control" id="nama_perusahaan_edit" name="nama_perusahaan" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="debet" class="form-label">Debet</label>
+            <input type="number" class="form-control" id="debet_edit" name="debet" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="keterangan" class="form-label">Keterangan</label>
+            <input type="text" class="form-control" id="keterangan_edit" name="keterangan">
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
   <script src="/dashboard/assets/vendor/libs/jquery/jquery.js"></script>
   <script src="/dashboard/assets/vendor/libs/popper/popper.js"></script>
@@ -183,6 +237,26 @@ function showImage(imageUrl) {
   
     document.getElementById('modalImage').src = imageUrl;
 }
+function editKas(kasId) {
+    fetch(`/kas/${kasId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Populate modal form fields with Kas data
+            document.getElementById('kasId').value = data.id;
+            document.getElementById('no_bukti_edit').value = data.no_bukti;
+            document.getElementById('tanggal_edit').value = data.tanggal;
+            document.getElementById('nama_kegiatan_edit').value = data.nama_kegiatan;
+            document.getElementById('nama_perusahaan_edit').value = data.nama_perusahaan;
+            document.getElementById('debet_edit').value = data.debet;
+            document.getElementById('keterangan_edit').value = data.keterangan;
+
+            // Set the form action URL for the PUT request (dynamic route)
+            document.getElementById('editKasForm').action = `/kas/${kasId}`;
+        })
+        .catch(error => console.error('Error fetching Kas data:', error));
+}
+
+
 
 
     function showContent(page) {
@@ -372,7 +446,98 @@ function showImage(imageUrl) {
             @endforeach
         </tbody>
     </table>`,
-        kas: `<h2>Buat KAS</h2><p>Halaman untuk membuat KAS.</p>`,
+        kas: `<h2>KAS</h2>
+<form action="{{ route('kas.submit') }}" method="POST">
+         @csrf
+  <div class="container mt-3">
+ 
+    <div class="form-group mb-3">
+      <label for="no_bukti">No Bukti</label>
+      <input type="text" name="no_bukti" id="no_bukti" class="form-control" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="tanggal">Tanggal</label>
+      <input type="date" name="tanggal" id="tanggal" class="form-control" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="nama_kegiatan">Nama Kegiatan</label>
+      <input type="text" name="nama_kegiatan" id="nama_kegiatan" class="form-control" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="nama_perusahaan">Nama Perusahaan</label>
+      <input type="text" name="nama_perusahaan" id="nama_perusahaan" class="form-control" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="debet">Debet</label>
+      <input type="number" name="debet" id="debet" class="form-control" required>
+    </div>
+    <div class="form-group mb-3">
+      <label for="keterangan">Keterangan</label>
+      <input type="text" name="keterangan" id="keterangan" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+</form>
+<form action="{{ route('kas.filter') }}" method="GET" class="mb-4">
+  <div class="row">
+    <div class="col-md-5">
+      <label for="start_date" class="form-label">Tanggal Mulai</label>
+      <input type="date" class="form-control" id="start_date" name="start_date" required>
+    </div>
+    <div class="col-md-5">
+      <label for="end_date" class="form-label">Tanggal Akhir</label>
+      <input type="date" class="form-control" id="end_date" name="end_date" required>
+    </div>
+    <div class="col-md-2 d-flex align-items-end">
+      <button type="submit" class="btn btn-primary">Filter</button>
+    </div>
+  </div>
+</form>
+<div class="d-flex">
+  <!-- Export to Excel Button -->
+  <form action="{{ url('kas/export') }}" method="GET">
+    <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+    <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+    <button type="submit" class="btn btn-success {{ !request('start_date') || !request('end_date') ? 'disabled' : '' }}">
+      Export to Excel
+    </button>
+  </form>
+  <button onclick="printTable()" class="btn btn-primary ms-2">Print</button>
+</div>
+     <table class="table table-bordered mt-4">
+            <thead>
+                <tr>
+      
+                    <th>No Bukti</th>
+                    <th>Tanggal</th>
+                    <th>Nama Kegiatan</th>
+                    <th>Nama Perusahaan</th>
+                    <th>Debet</th>
+                    <th>Keterangan</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($kasData as $kas)
+                    <tr>
+                     
+                        <td>{{ $kas->no_bukti }}</td>
+                        <td>{{ \Carbon\Carbon::parse($kas->tanggal)->format('d/m/Y') }}</td>
+                        <td>{{ $kas->nama_kegiatan }}</td>
+                        <td>{{ $kas->nama_perusahaan }}</td>
+                        <td>Rp. {{ number_format($kas->debet, 2) }}</td>
+                        <td>{{ $kas->keterangan }}</td>
+                      <td>
+                          <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editKasModal" onclick="editKas({{ $kas->id }})">
+                            Edit
+                          </button>
+                        </td>
+
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+`,
         kwitansi: `<h2>Buat Kwitansi</h2><p>Halaman untuk membuat Kwitansi.</p>`,
       };
       document.getElementById('mainContent').innerHTML = content[page];
@@ -432,6 +597,16 @@ document.addEventListener("DOMContentLoaded", function() {
         showContent('invoice');
     }
 });
+document.addEventListener("DOMContentLoaded", function() {
+   
+    const url = window.location.href;
+
+
+    if (url.includes('kas/filter') && url.includes('start_date') && url.includes('end_date')) {
+ 
+        showContent('kas');
+    }
+});
 function printTable() {
     var table = document.querySelector(".table"); 
 
@@ -479,6 +654,16 @@ function printTable() {
                 showContent('buatInvoice');
             });
         @endif
+    @if (session('success-simpan-kas'))
+            Swal.fire({
+                title: "Invoice Di Buat!",
+                text: "Berhasil menyimpan kas",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('kas');
+            });
+        @endif
         @if (session('filter-tanggal-invoice'))
             Swal.fire({
                 title: "Filter Tanggal",
@@ -489,6 +674,16 @@ function printTable() {
                 showContent('invoice');
             });
         @endif         
+        @if (session('success-edit-kas'))
+            Swal.fire({
+                title: "Edit Berhasil",
+                text: "Data kas telah diperbarui",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('kas');
+            });
+        @endif
 
   </script>
 

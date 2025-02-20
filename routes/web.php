@@ -5,12 +5,15 @@ use Illuminate\Http\Request;
 use App\Exports\InvoicesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\KasController;
 use App\Http\Controllers\KeyController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\PengujianController;
 use App\Http\Controllers\DataPelangganController;
 use App\Http\Controllers\DataAdministrasiController;
+use App\Models\Invoice;
+
 Route::get('/', function () {
     return view('pilih-login'); 
 })->name('pilih.login');
@@ -63,7 +66,8 @@ Route::post('/verify-bendahara', [KeyController::class, 'verifyBendahara'])->nam
 
 Route::get('/dashboard-bendahara', [KeyController::class, 'indexBendahara'])->name('dashboard.bendahara');
 
-
+Route::get('kas/export', [KasController::class, 'export'])->name('kas.export');
+Route::get('kas/filter', [InvoiceController::class, 'filterInvoice'])->name('kas.filter');
 
 
 Route::get('/login-teknisi', function () {
@@ -129,7 +133,12 @@ Route::post('/data-administrasi/upload', [DataAdministrasiController::class, 'up
 Route::get('/data-administrasi/files', [DataAdministrasiController::class, 'getFiles'])->name('data.administrasi.files');
 Route::get('/dashboard-bendahara', [DataAdministrasiController::class, 'indexBendahara'])->name('dashboard.bendahara');
 Route::get('/data-pelanggan-bendahara/{no_invoice}', [DataPelangganController::class, 'findByInvoice'])->name('data.pelanggan.findByInvoice');
+// Route to show the form for editing
+Route::get('/kas/{kasId}/edit', [KasController::class, 'edit'])->name('kas.edit');
 
+Route::put('/kas/{kasId}', [KasController::class, 'update'])->name('kas.update');
+
+Route::get('/kas/{kasId}', [KasController::class, 'show'])->name('kas.show');
 
 Route::post('/invoice', [InvoiceController::class, 'store'])->name('invoice.store');
 
@@ -157,3 +166,4 @@ Route::delete('/data-pelanggan/{id}', [DataPelangganController::class, 'destroy'
 Route::put('/data-pelanggan/{id}', [DataPelangganController::class, 'update'])->name('data.pelanggan.update');
 Route::post('/data-pelanggan/{id}/send-to-bendahara', [DataPelangganController::class, 'sendToBendahara'])->name('data.pelanggan.sendToBendahara');
 Route::post('/data-pelanggan/{id}/send-to-teknisi', [DataPelangganController::class, 'sendToTeknisi'])->name('data.pelanggan.sendToTeknisi');
+Route::post('/input-kas', [KasController::class, 'store'])->name('kas.submit');

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kas;
 use App\Models\Invoice;
 use App\Models\Pengujian;
 use Illuminate\Http\Request;
@@ -22,8 +23,8 @@ class DataAdministrasiController extends Controller
         $files = DataAdministrasi::orderBy('created_at', 'desc')->get();
         $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
         $invoices = Invoice::orderBy('created_at', 'desc')->get();
-     
-        return view('index-bendahara', compact('files', 'pelanggan', 'invoices'));
+   
+        return view('index-admin', compact('files', 'pelanggan', 'invoices'));
     }
     public function indexBendahara()
     {
@@ -32,9 +33,9 @@ class DataAdministrasiController extends Controller
         $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
         $pengujianData = Pengujian::all(); 
         $invoices = Invoice::orderBy('created_at', 'desc')->get();
-        
+        $kasData = Kas::orderBy('created_at', 'desc')->get();
     
-        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData','invoices'));
+        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData','invoices','kasData'));
     }
     
     public function upload(Request $request)
