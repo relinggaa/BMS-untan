@@ -49,6 +49,8 @@
   .navbar-toggler {
     border: none;
   }
+
+
 </style>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
@@ -289,7 +291,35 @@ function showImage(imageUrl) {
             <button type="submit" class="btn btn-primary">Simpan</button>
         </form>`,
         invoice: `<h2>Invoice</h2>
-        
+     <!-- Filter Tanggal -->
+      <form action="{{ route('invoice.filter') }}" method="GET" class="mb-4">
+          <div class="row">
+              <div class="col-md-5">
+                  <label for="start_date" class="form-label">Tanggal Mulai</label>
+                  <input type="date" class="form-control" id="start_date" name="start_date" required>
+              </div>
+              <div class="col-md-5">
+                  <label for="end_date" class="form-label">Tanggal Akhir</label>
+                  <input type="date" class="form-control" id="end_date" name="end_date" required>
+              </div>
+              <div class="col-md-2 d-flex align-items-end">
+                  <button type="submit" class="btn btn-primary">Filter</button>
+              </div>
+          </div>
+      </form>
+
+      <div class="d-flex">
+          <form action="{{ url('invoice/export') }}" method="GET">
+              <input type="hidden" name="start_date" value="{{ request('start_date') }}">
+              <input type="hidden" name="end_date" value="{{ request('end_date') }}">
+              <button type="submit" class="btn btn-success {{ !request('start_date') || !request('end_date') ? 'disabled' : '' }}">
+                  Export to Excel
+              </button>
+          </form>
+          <button onclick="printTable()" class="btn btn-primary ms-2">Print</button>
+      </div>
+
+
         <table class="table table-striped">
         <thead>
             <tr>
@@ -333,6 +363,10 @@ function showImage(imageUrl) {
                             <span>No Image</span>
                         @endif
                   </td>
+                  <td>
+                 <a class="btn btn-primary" href="{{ route('invoice.cetak', $invoice->id) }}">Print</a>
+
+                </td>
 
                 </tr>
             @endforeach
@@ -366,7 +400,7 @@ function showImage(imageUrl) {
             return;
         }
 
-        // Ambil elemen option yang dipilih
+        
         const selectedOption = jenisPengujian.options[jenisPengujian.selectedIndex];
       
 
@@ -388,9 +422,50 @@ function showImage(imageUrl) {
     }
 });
 
+document.addEventListener("DOMContentLoaded", function() {
+   
+    const url = window.location.href;
 
 
+    if (url.includes('invoice/filter') && url.includes('start_date') && url.includes('end_date')) {
+ 
+        showContent('invoice');
+    }
+});
+function printTable() {
+    var table = document.querySelector(".table"); 
 
+
+    var tableClone = table.cloneNode(true);
+    tableClone.querySelectorAll("td.actions, th.actions, td button").forEach(element => element.remove());
+
+
+    var newWindow = window.open("", "", "width=900,height=600");
+    newWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Data Pelanggan</title>
+            <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                th, td { border: 1px solid black; padding: 8px; text-align: left; }
+                th { background-color: #f2f2f2; }
+            </style>
+        </head>
+        <body>
+            <h2>Data Pelanggan</h2>
+            ${tableClone.outerHTML} <!-- Copy tabel tanpa tombol -->
+            <script>
+                window.onload = function() {
+                    window.print();
+                    window.onafterprint = function() { window.close(); };
+                };
+            <\/script>
+        </body>
+        </html>
+    `);
+    newWindow.document.close();
+}
 
 
 
@@ -404,7 +479,16 @@ function showImage(imageUrl) {
                 showContent('buatInvoice');
             });
         @endif
-
+        @if (session('filter-tanggal-invoice'))
+            Swal.fire({
+                title: "Filter Tanggal",
+                text: "Menampilkan data berdasarkan rentang tanggal yang dipilih",
+                icon: "info",
+                confirmButtonColor: "#007bff",
+            }).then(() => {
+                showContent('invoice');
+            });
+        @endif         
 
   </script>
 

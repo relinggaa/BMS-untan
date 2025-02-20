@@ -3,8 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Pengujian;
 use Illuminate\Http\Request;
+use App\Models\DataPelanggan;
+use App\Exports\InvoicesExport;
+use App\Models\DataAdministrasi;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class InvoiceController extends Controller
 {
@@ -49,5 +54,45 @@ class InvoiceController extends Controller
       
         return redirect()->route('dashboard.bendahara')->with('success-buat-invoice', 'Invoice created successfully');
     }
+    public function filterInvoice(Request $request)
+    {
+
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
     
+       
+        $invoices = Invoice::whereBetween('tanggal_datang', [$startDate, $endDate])
+                            ->orderBy('tanggal_datang', 'desc')
+                            ->get();
+    
+        
+        $files = DataAdministrasi::orderBy('created_at', 'desc')->get();
+    
+
+        $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
+
+        $pengujianData = Pengujian::all();
+    
+     
+        return view('index-bendahara', compact('invoices', 'files', 'pelanggan', 'pengujianData'))
+               ->with('filter-tanggal', 'filter-tanggal-invoice');
+    }
+        public function exportInvoice(Request $request)
+        {
+            $startDate = $request->start_date;
+            $endDate = $request->end_date;
+
+           
+            return Excel::download(new InvoicesExport($startDate, $endDate), 'invoice_' . $startDate . '_to_' . $endDate . '.xlsx');
+        }
+        // InvoiceController.php
+        public function cetakInvoice($id)
+        {
+            // Fetch the invoice by ID
+            $invoice = Invoice::findOrFail($id);
+            
+            // Pass the invoice data to the cetak-invoice view
+            return view('cetak-invoice', compact('invoice'));
+        }
+
 }

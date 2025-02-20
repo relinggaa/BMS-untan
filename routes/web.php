@@ -90,7 +90,14 @@ Route::get('data-pelanggan/export', function () {
 
     return Excel::download(new InvoicesExport($startDate, $endDate), 'pelanggan.xlsx');
 });
-
+Route::get('/invoices/export', function () {
+    $startDate = request('start_date');
+    $endDate = request('end_date');
+    
+       
+    return Excel::download(new InvoicesExport($startDate, $endDate), 'invoices.xlsx');
+})->name('invoice.export');
+Route::get('/invoice/filter', [InvoiceController::class, 'filterInvoice'])->name('invoice.filter');
 Route::get('/login-pelaporan', function () {
     return view('login-pelaporan'); 
 })->name('login.pelaporan');
@@ -131,6 +138,8 @@ Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.inde
 
 
 
+// web.php
+Route::get('/cetak-invoice/{id}', [InvoiceController::class, 'cetakInvoice'])->name('invoice.cetak');
 
 
 Route::get('/login-penyelia', function () {
