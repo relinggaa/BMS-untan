@@ -1,18 +1,19 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Models\Invoice;
 
+use Illuminate\Http\Request;
 use App\Exports\InvoicesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\KeyController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\KwitansiController;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\PengujianController;
 use App\Http\Controllers\DataPelangganController;
 use App\Http\Controllers\DataAdministrasiController;
-use App\Models\Invoice;
 
 Route::get('/', function () {
     return view('pilih-login'); 
@@ -68,6 +69,9 @@ Route::get('/dashboard-bendahara', [KeyController::class, 'indexBendahara'])->na
 
 Route::get('kas/export', [KasController::class, 'export'])->name('kas.export');
 Route::get('kas/filter', [InvoiceController::class, 'filterInvoice'])->name('kas.filter');
+Route::post('/kwitansi/{id}/send', [KwitansiController::class, 'sendToKepalaLab'])->name('kwitansi.send');
+
+Route::delete('/kwitansi/{id}', [KwitansiController::class, 'destroy'])->name('kwitansi.destroy');
 
 
 Route::get('/login-teknisi', function () {
@@ -83,6 +87,7 @@ Route::get('/login-pencetak', function () {
 })->name('login.pencetak');
 
 Route::post('/verify-pencetak', [KeyController::class, 'verifyPencetak'])->name('verify.pencetak');
+
 
 
 Route::get('/dashboard-pencetak', [KeyController::class, 'indexPencetak'])->name('dashboard.pencetak');
@@ -133,7 +138,7 @@ Route::post('/data-administrasi/upload', [DataAdministrasiController::class, 'up
 Route::get('/data-administrasi/files', [DataAdministrasiController::class, 'getFiles'])->name('data.administrasi.files');
 Route::get('/dashboard-bendahara', [DataAdministrasiController::class, 'indexBendahara'])->name('dashboard.bendahara');
 Route::get('/data-pelanggan-bendahara/{no_invoice}', [DataPelangganController::class, 'findByInvoice'])->name('data.pelanggan.findByInvoice');
-// Route to show the form for editing
+
 Route::get('/kas/{kasId}/edit', [KasController::class, 'edit'])->name('kas.edit');
 
 Route::put('/kas/{kasId}', [KasController::class, 'update'])->name('kas.update');
@@ -161,9 +166,23 @@ Route::delete('/keys/{id}', [KeyController::class, 'destroy'])->name('keys.destr
 // Route untuk edit
 Route::get('/data-pelanggan/{id}/edit', [DataPelangganController::class, 'edit'])->name('data.pelanggan.edit');
 Route::delete('/data-pelanggan/{id}', [DataPelangganController::class, 'destroy'])->name('data.pelanggan.destroy');
+Route::get('/data-kwitansi/{nomorInvoice}', [KwitansiController::class, 'getKwitansiData']);
 
 // Route untuk update
 Route::put('/data-pelanggan/{id}', [DataPelangganController::class, 'update'])->name('data.pelanggan.update');
 Route::post('/data-pelanggan/{id}/send-to-bendahara', [DataPelangganController::class, 'sendToBendahara'])->name('data.pelanggan.sendToBendahara');
 Route::post('/data-pelanggan/{id}/send-to-teknisi', [DataPelangganController::class, 'sendToTeknisi'])->name('data.pelanggan.sendToTeknisi');
 Route::post('/input-kas', [KasController::class, 'store'])->name('kas.submit');
+// Route untuk update Kwitansi
+Route::put('/kwitansi/{id}', [KwitansiController::class, 'update'])->name('kwitansi.update');
+
+Route::get('/kwitansi/{id}', [KwitansiController::class, 'show'])->name('kwitansi.show');
+
+Route::get('/kwitansi/create', [KwitansiController::class, 'create'])->name('kwitansi.create');
+
+Route::post('/kwitansi', [KwitansiController::class, 'store'])->name('kwitansi.store');
+
+Route::get('/kwitansi/create', [KwitansiController::class, 'create'])->name('kwitansi.create');
+
+
+Route::post('/kwitansi', [KwitansiController::class, 'store'])->name('kwitansi.store');

@@ -11,26 +11,23 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('kwitansis', function (Blueprint $table) {
+        Schema::create('kwitansi', function (Blueprint $table) {
             $table->id();
-            $table->string('nomor');
-            $table->string('terima_dari');
+            $table->string('nomor_invoice');
             $table->string('supplier');
             $table->string('proyek');
             $table->decimal('total_tagihan', 15, 2);
-            $table->decimal('pembayaran_dp', 15, 2);
-            $table->decimal('sisa_pembayaran', 15, 2);
+            $table->string('jenis_pembayaran');
             $table->text('untuk_pembayaran');
-            $table->date('tanggal');
             $table->timestamps();
         });
     }
-    
+
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::dropIfExists('kwitansis');
+        Schema::dropIfExists('kwitansi');
     }
 };

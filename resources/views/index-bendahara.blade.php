@@ -188,6 +188,58 @@
   </div>
 </div>
 
+<!-- Modal Edit Kwitansi -->
+<div class="modal fade" id="editKwitansiModal" tabindex="-1" aria-labelledby="editKwitansiModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editKwitansiModalLabel">Edit Kwitansi</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="editKwitansiForm" action="{{ route('kwitansi.update', 'placeholder') }}" method="POST">
+          @csrf
+          @method('PUT')
+
+          <input type="hidden" id="kwitansiId" name="kwitansiId">
+
+          <div class="mb-3">
+            <label for="nomor_invoice_kwitansi_edit" class="form-label">Nomor Invoice</label>
+            <input type="text" class="form-control" id="nomor_invoice_kwitansi_edit" name="nomor_invoice_kwitansi" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="supplier_kwitansi_edit" class="form-label">Supplier</label>
+            <input type="text" class="form-control" id="supplier_kwitansi_edit" name="supplier_kwitansi" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="proyek_kwitansi_edit" class="form-label">Proyek</label>
+            <input type="text" class="form-control" id="proyek_kwitansi_edit" name="proyek_kwitansi" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="total_tagihan_kwitansi_edit" class="form-label">Total Tagihan</label>
+            <input type="number" class="form-control" id="total_tagihan_kwitansi_edit" name="total_tagihan_kwitansi" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="jenis_pembayaran_kwitansi_edit" class="form-label">Jenis Pembayaran</label>
+            <input type="text" class="form-control" id="jenis_pembayaran_kwitansi_edit" name="jenis_pembayaran_kwitansi" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="untuk_pembayaran_kwitansi_edit" class="form-label">Untuk Pembayaran</label>
+            <textarea class="form-control" id="untuk_pembayaran_kwitansi_edit" name="untuk_pembayaran_kwitansi" required></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-primary">Update Kwitansi</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 
 
   <script src="/dashboard/assets/vendor/libs/jquery/jquery.js"></script>
@@ -256,7 +308,24 @@ function editKas(kasId) {
         .catch(error => console.error('Error fetching Kas data:', error));
 }
 
+function editKwitansi(id) {
+    fetch(`/kwitansi/${id}`)  
+        .then(response => response.json()) 
+        .then(data => {
+    
+            document.getElementById('kwitansiId').value = data.id;
+            document.getElementById('nomor_invoice_kwitansi_edit').value = data.nomor_invoice;
+            document.getElementById('supplier_kwitansi_edit').value = data.supplier;
+            document.getElementById('proyek_kwitansi_edit').value = data.proyek;
+            document.getElementById('total_tagihan_kwitansi_edit').value = data.total_tagihan;
+            document.getElementById('jenis_pembayaran_kwitansi_edit').value = data.jenis_pembayaran;
+            document.getElementById('untuk_pembayaran_kwitansi_edit').value = data.untuk_pembayaran;
 
+          
+            document.getElementById('editKwitansiForm').action = `/kwitansi/${data.id}`;
+        })
+        .catch(error => console.error('Error fetching Kwitansi data:', error));
+}
 
 
     function showContent(page) {
@@ -538,7 +607,104 @@ function editKas(kasId) {
             </tbody>
         </table>
 `,
-        kwitansi: `<h2>Buat Kwitansi</h2><p>Halaman untuk membuat Kwitansi.</p>`,
+kwitansi: `<h2>Buat Kwitansi</h2>
+<p>Halaman untuk membuat Kwitansi.</p>
+<form id="kwitansiForm" action="{{ route('kwitansi.store') }}" method="POST">
+  @csrf
+  <div class="mb-3">
+    <label for="nomor_invoice_kwitansi" class="form-label">Nomor Invoice</label>
+    <input type="text" class="form-control" id="nomor_invoice_kwitansi" name="nomor_invoice_kwitansi" required>
+    <button type="button" class="btn btn-success mt-2" onclick="searchKwitansi()">Search</button>
+  </div>
+
+  <div class="mb-3">
+    <label for="supplier_kwitansi" class="form-label">Supplier</label>
+    <input type="text" class="form-control" id="supplier_kwitansi" name="supplier_kwitansi" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="proyek_kwitansi" class="form-label">Proyek</label>
+    <input type="text" class="form-control" id="proyek_kwitansi" name="proyek_kwitansi" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="total_tagihan_kwitansi" class="form-label">Total Tagihan</label>
+    <input type="number" class="form-control" id="total_tagihan_kwitansi" name="total_tagihan_kwitansi" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="jenis_pembayaran_kwitansi" class="form-label">Jenis Pembayaran</label>
+    <input type="text" class="form-control" id="jenis_pembayaran_kwitansi" name="jenis_pembayaran_kwitansi" required>
+  </div>
+
+  <div class="mb-3">
+    <label for="untuk_pembayaran_kwitansi" class="form-label">Untuk Pembayaran</label>
+    <textarea class="form-control" id="untuk_pembayaran_kwitansi" name="untuk_pembayaran_kwitansi" required></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Simpan Kwitansi</button>
+</form>
+
+<hr>
+
+<h1>Daftar Kwitansi</h1>
+
+<table class="table table-bordered table-striped table-hover">
+    <thead class="table-light">
+        <tr>
+            <th>Nomor Invoice</th>
+            <th>Supplier</th>
+            <th>Proyek</th>
+            <th>Total Tagihan</th>
+            <th>Jenis Pembayaran</th>
+            <th>Untuk Pembayaran</th>
+            <th>Tanggal</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach($kwitansis as $kwitansi)
+            <tr>
+                <td>{{ $kwitansi->nomor_invoice }}</td>
+                <td>{{ $kwitansi->supplier }}</td>
+                <td>{{ $kwitansi->proyek }}</td>
+                <td>Rp. {{ number_format($kwitansi->total_tagihan, 2) }}</td>
+                <td>{{ $kwitansi->jenis_pembayaran }}</td>
+                <td>{{ $kwitansi->untuk_pembayaran }}</td>
+                <td>{{ $kwitansi->created_at->format('d-m-Y') }}</td>
+                 <td>
+                  
+                </td>
+                 <td>
+                    @if($kwitansi->is_sent)
+                         <button class="btn btn-warning disabled" data-bs-toggle="modal" data-bs-target="#editKwitansiModal" onclick="editKwitansi({{ $kwitansi->id }})">Edit</button>
+                      <form action="{{ route('kwitansi.destroy', $kwitansi->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kwitansi ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger disabled">Hapus</button>
+                    </form>
+                    @else
+                     <form action="{{ route('kwitansi.send', $kwitansi->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-primary" @if($kwitansi->is_sent) disabled @endif>Kirim</button>
+                        </form>
+                       <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editKwitansiModal" onclick="editKwitansi({{ $kwitansi->id }})">Edit</button>
+                      <form action="{{ route('kwitansi.destroy', $kwitansi->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kwitansi ini?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-danger">Hapus</button>
+                    </form>
+                    @endif
+                </td>
+
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
+
+`
+,
       };
       document.getElementById('mainContent').innerHTML = content[page];
     }
@@ -629,7 +795,7 @@ function printTable() {
         </head>
         <body>
             <h2>Data Pelanggan</h2>
-            ${tableClone.outerHTML} <!-- Copy tabel tanpa tombol -->
+            ${tableClone.outerHTML} 
             <script>
                 window.onload = function() {
                     window.print();
@@ -641,6 +807,28 @@ function printTable() {
     `);
     newWindow.document.close();
 }
+function searchKwitansi() {
+  const nomorInvoice = document.getElementById('nomor_invoice_kwitansi').value;
+
+
+  fetch(`/data-kwitansi/${nomorInvoice}`)
+    .then(response => response.json())
+    .then(data => {
+      if (data) {
+        document.getElementById('supplier_kwitansi').value = data.nama_perusahaan; 
+        document.getElementById('proyek_kwitansi').value = data.nama_proyek;
+        document.getElementById('total_tagihan_kwitansi').value = data.total_biaya;
+        document.getElementById('jenis_pembayaran_kwitansi').value = data.jenis_pembayaran;
+  
+      } else {
+        alert('Nomor Invoice tidak ditemukan');
+      }
+    })
+    .catch(error => console.error('Error fetching kwitansi:', error));
+}
+
+
+
 
 
 
@@ -683,8 +871,48 @@ function printTable() {
             }).then(() => {
                 showContent('kas');
             });
+            @endif
+        @if (session('success-edit-kwitansi'))
+            Swal.fire({
+                title: "Edit Berhasil",
+                text: "Data kwintansi telah diperbarui",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('kwitansi');
+            });
         @endif
-
+        @if (session('success-simpan-kwitansi'))
+            Swal.fire({
+                title: "Berhasil",
+                text: "Data kwintansi telah di simpan",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('kwitansi');
+            });
+        @endif
+        @if (session('success-kirim-kepalalab'))
+            Swal.fire({
+                title: "Berhasil",
+                text: "Data kwintansi telah di kirim ke kepala lab",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('kwitansi');
+            });
+        @endif
+        @if (session('success-hapus-kwintansi'))
+            Swal.fire({
+                title: " Berhasil",
+                text: "Data kwintansi telah di hapus",
+                icon: "warning",
+                confirmButtonColor: "#dc3545",
+            }).then(() => {
+                showContent('kwitansi');
+            });
+        @endif
+          
   </script>
 
 </body>

@@ -8,16 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Kwitansi extends Model
 {
     use HasFactory;
-
+    protected $table = 'kwitansi';
     protected $fillable = [
-        'nomor',
-        'terima_dari',
+        'nomor_invoice',
         'supplier',
         'proyek',
         'total_tagihan',
-        'pembayaran_dp',
-        'sisa_pembayaran',
-        'untuk_pembayaran',
-        'tanggal'
+        'jenis_pembayaran',
+        'untuk_pembayaran'
     ];
 }
