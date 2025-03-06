@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('invoices', function (Blueprint $table) {
-            $table->id();
-            $table->string('excel_lab');
-            $table->string('excel_lab_dengan_harga');
-            $table->string('teknisi'); 
-            $table->timestamps();
+        Schema::table('lembar_pengujian', function (Blueprint $table) {
+            $table->boolean('is_sent')->default(false);  // Default to false
         });
     }
     
@@ -26,9 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('invoices', function (Blueprint $table) {
-            $table->dropColumn('total_biaya');
+        Schema::table('lembar_pengujian', function (Blueprint $table) {
+            //
         });
-    
     }
 };

@@ -10,8 +10,10 @@
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
   <link rel="stylesheet" href="/dashboard/assets/css/demo.css" />
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/pages/page-auth.css" />
+
   <script src="/dashboard/assets/vendor/js/helpers.js"></script>
   <script src="/dashboard/assets/js/config.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
 </head>
 <style>
       #layout-menu ul li a {
@@ -28,6 +30,7 @@
       background-color: #ced4da;
     }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <body>
   <!-- Verifikasi Session -->
   @if (!session('login_teknisi'))
@@ -47,8 +50,11 @@
           </a>
         </div>
         <ul class="list-unstyled">
-          <li><a href="#" class="d-block p-2"><i class="menu-icon bx bx-user"></i>Data Admin</a></li>
-          <li><a href="#" class="d-block p-2"><i class="menu-icon bx bx-pencil"></i>Lembar Pengujian</a></li>
+          <!-- Update the sidebar items -->
+          <li><a href="#" class="d-block p-2" onclick="showContent('dataPelanggan')"><i class="menu-icon bx bx-user"></i>Data Pelanggan</a></li>
+          <li><a href="#" class="d-block p-2" onclick="showContent('lembarPengujian')"><i class="menu-icon bx bx-calendar"></i>Lembar Pengujian</a></li>
+          <li><a href="#" class="d-block p-2" onclick="showContent('invoiceLab')"><i class="menu-icon bx bx-file"></i>Invoice Lab</a></li>
+          <li><a href="#" class="d-block p-2" onclick="showContent('invoiceLapangan')"><i class="menu-icon bx bx-download"></i>Invoice Lapangan</a></li>
           <li class="menu-item">
             <form action="{{ route('logout') }}" method="POST">
               @csrf
@@ -58,7 +64,6 @@
               </button>
             </form>
           </li>
-          
         </ul>
       </aside>
       
@@ -72,8 +77,11 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
-                <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-pencil"></i>Data Admin</a></li>
-                <li class="nav-item"><a class="nav-link" href="#"><i class="menu-icon bx bx-user"></i>Lembar Pengujian</a></li>
+                <!-- Update navbar items -->
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('dataPelanggan')"><i class="menu-icon bx bx-user"></i>Data Pelanggan</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('lembarPengujian')"><i class="menu-icon bx bx-calendar"></i>Lembar Pengujian</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('invoiceLab')"><i class="menu-icon bx bx-file"></i>Invoice Lab</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('invoiceLapangan')"><i class="menu-icon bx bx-download"></i>Invoice Lapangan</a></li>
                 <li class="menu-item">
                   <form action="{{ route('logout') }}" method="POST">
                     @csrf
@@ -88,8 +96,11 @@
           </div>
         </nav>
       <!-- / Menu -->
-            <h1>Berhasil Login Teknisi</h1>
-         
+           
+            <div class="flex-grow-1 p-3" id="mainContent">
+              <!-- Konten dinamis akan ditampilkan di sini -->
+              <h1>Selamat datang di Dashboard Teknisi</h1>
+            </div>
 
           <!-- / Content -->
         </div>
@@ -103,6 +114,188 @@
   <script src="/dashboard/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
   <script src="/dashboard/assets/vendor/js/menu.js"></script>
   <script src="/dashboard/assets/js/main.js"></script>
+  <script>
+    // JavaScript to display content based on sidebar clicks
 
+    // Pastikan konten telah dimuat sebelum mencoba mengakses elemen
+    function showContent(page) {
+        const content = {
+            dataPelanggan: `<h2>Data Pelanggan</h2>
+                <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>No Invoice</th>
+                <th>Nama Perusahaan</th>
+                <th>Nama Proyek</th>
+                <th>Permohonan</th>
+                <th>Tanggal Datang</th>
+                <th>Kegiatan</th>
+                <th>Keterangan</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($dataPelanggan as $pelanggan)
+              <tr>
+                <td>{{ $pelanggan->no_invoice }}</td>
+                <td>{{ $pelanggan->nama_perusahaan }}</td>
+                <td>{{ $pelanggan->nama_proyek }}</td>
+                <td>{{ $pelanggan->permohonan }}</td>
+                <td>{{ $pelanggan->tanggal_datang }}</td>
+                <td>{{ $pelanggan->kegiatan }}</td>
+                <td>{{ $pelanggan->keterangan }}</td>
+      
+              </tr>
+              @endforeach
+            </tbody>
+          </table>`,
+            lembarPengujian: `<h2>Lembar Pengujian</h2>
+          
+              <form id="lembarPengujianForm" action="{{ route('lembar-pengujian.upload') }}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  <div class="mb-3">
+                      <label for="file_pdf" class="form-label">Upload PDF</label>
+                      <input type="file" class="form-control" id="file_pdf" name="file_pdf" accept="application/pdf" required>
+                  </div>
+                  <button type="submit" class="btn btn-primary">Upload PDF</button>
+              </form>
+
+              <h3>Data Pengujian</h3>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>File Name</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    @foreach ($pdfFiles as $index => $file)
+      <tr>
+        <td>{{ $index + 1 }}</td>
+        <td>
+          <a href="{{ asset('storage/' . $file->file_path) }}" target="_blank">
+            {{ basename($file->file_path) }}
+          </a>
+        </td>
+        <td>
+          <!-- Kirim Button -->
+          @if(!$file->is_sent) <!-- Check if not sent -->
+            <form action="{{ route('lembarPengujian.kirim', $file->id) }}" method="POST" style="display:inline;">
+              @csrf
+              <button type="submit" class="btn btn-success btn-sm" onclick="return confirm('Apakah anda yakin ingin mengirim data ke pelapor?')">
+                Kirim
+              </button>
+            </form>
+          @else
+            <!-- If data is sent, disable the delete button -->
+            <button class="btn btn-secondary btn-sm" disabled>Data Sudah Dikirim</button>
+          @endif
+
+          <!-- Delete Button -->
+          @if(!$file->is_sent) <!-- Allow delete only if not sent -->
+            <form action="{{ route('lembarPengujian.destroy', $file->id) }}" method="POST" style="display:inline;">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah anda yakin ingin menghapus file?')">
+                Delete
+              </button>
+            </form>
+          @else
+            <!-- If data is sent, disable the delete button -->
+            <button class="btn btn-secondary btn-sm" disabled>Hapus</button>
+          @endif
+        </td>
+      </tr>
+    @endforeach
+  </tbody>
+</table>
+
+`,
+            invoiceLab: ` <h2>Invoice Lab</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Excel Lab</th>
+              <th>Teknisi</th>
+              <th>Created At</th>
+     
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($invoiceLabs as $index => $invoice)
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td><a href="{{ asset('storage/' . $invoice->excel_lab) }}" target="_blank">{{ basename($invoice->excel_lab) }}</a></td>
+                <td>{{ $invoice->teknisi }}</td>
+                <td>{{ $invoice->created_at->format('d M Y H:i') }}</td>
+              
+              </tr>
+            @endforeach
+          </tbody>
+        </table>`,
+            invoiceLapangan: `<h2>Invoice Lapangan</h2>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Excel Lab</th>
+              <th>Teknisi</th>
+              <th>Created At</th>
+          
+            </tr>
+          </thead>
+          <tbody>
+            @foreach($invoiceLapangan as $index => $invoice)
+              <tr>
+                <td>{{ $index + 1 }}</td>
+                <td><a href="{{ asset('storage/' . $invoice->excel_lab) }}" target="_blank">{{ basename($invoice->excel_lab) }}</a></td>
+                <td>{{ $invoice->teknisi }}</td>
+                <td>{{ $invoice->created_at->format('d M Y H:i') }}</td>
+           
+              </tr>
+            @endforeach
+          </tbody>
+        </table>`
+        };
+
+        const mainContent = document.getElementById('mainContent');
+        if (mainContent) {
+            mainContent.innerHTML = content[page] || "<p>Konten tidak ditemukan.</p>";
+        } else {
+            console.error('Elemen #mainContent tidak ditemukan');
+        }
+    }
+    @if (session('success-simpan-pengujian'))
+            Swal.fire({
+                title: "Berhasil",
+                text: "Data pengujian berhasil di simpan",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('lembarPengujian');
+            });
+        @endif
+    @if (session('success-kirim-pelaporan'))
+            Swal.fire({
+                title: "Berhasil",
+                text: "Data pengujian berhasil di kirim",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('lembarPengujian');
+            });
+        @endif
+        @if (session('success-hapus-pengujian'))
+            Swal.fire({
+                title: " Berhasil",
+                text: "Data Pengujian telah di hapus",
+                icon: "warning",
+                confirmButtonColor: "#dc3545",
+            }).then(() => {
+              showContent('lembarPengujian');
+            });
+        @endif      
+  </script>
 </body>
 </html>

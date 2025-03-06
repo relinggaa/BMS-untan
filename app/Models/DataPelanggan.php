@@ -9,7 +9,7 @@ class DataPelanggan extends Model
     use HasFactory;
 
     protected $fillable = [
-        'no_invoice', 'nama_perusahaan', 'nama_proyek', 'permohonan', 'tanggal_datang', 'teknisi'
+        'no_invoice', 'nama_perusahaan', 'nama_proyek', 'permohonan', 'tanggal_datang', 'kegiatan',  'pembayaran','keterangan' 
     ];
             public function sendToBendahara()
                 {

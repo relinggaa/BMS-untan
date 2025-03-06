@@ -71,8 +71,8 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('dataAdministrasi')"><i class="menu-icon bx bx-download"></i>Data Administrasi</a></li>
-          <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('invoice')"><i class="menu-icon bx bx-notepad"></i>Buat Invoice</a></li>
-          <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('invoice')"><i class="menu-icon bx bx-notepad"></i>Daftar Invoice</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('invoice')"><i class="menu-icon bx bx-notepad"></i>Buat invoiceLab</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('invoice')"><i class="menu-icon bx bx-notepad"></i>Daftar invoiceLab</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('kas')"><i class="menu-icon bx bx-notepad"></i>Buat KAS</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('kwitansi')"><i class="menu-icon bx bx-file"></i>Buat Kwitansi</a></li>
           <li class="nav-item">
@@ -98,9 +98,10 @@
           </a>
         </div>
         <ul class="list-unstyled mt-2">
+          <li><a href="#" class="menu-link" onclick="showContent('dataPelanggan')"><i class="menu-icon bx bx-user"></i>Data Pelanggan</a></li>
           <li><a href="#" class="menu-link" onclick="showContent('dataAdministrasi')"><i class="menu-icon bx bx-download"></i>Data Administrasi</a></li>
-          <li><a href="#" class="menu-link" onclick="showContent('buatInvoice')"><i class="menu-icon bx bx-notepad"></i>Buat Invoice</a></li>
-          <li><a href="#" class="menu-link" onclick="showContent('invoice')"><i class="menu-icon bx bx-notepad"></i>DaftarInvoice</a></li>
+          <li><a href="#" class="menu-link" onclick="showContent('buatInvoice')"><i class="menu-icon bx bx-notepad"></i>Buat invoice lab</a></li>
+          <li><a href="#" class="menu-link" onclick="showContent('invoiceLapangan')"><i class="menu-icon bx bx-notepad"></i>Buat invoice lapangan</a></li>
           <li><a href="#" class="menu-link" onclick="showContent('kas')"><i class="menu-icon bx bx-notepad"></i>Buat KAS</a></li>
           <li><a href="#" class="menu-link" onclick="showContent('kwitansi')"><i class="menu-icon bx bx-file"></i>Buat Kwitansi</a></li>
           <li>
@@ -188,6 +189,8 @@
   </div>
 </div>
 
+
+
 <!-- Modal Edit Kwitansi -->
 <div class="modal fade" id="editKwitansiModal" tabindex="-1" aria-labelledby="editKwitansiModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -204,7 +207,7 @@
           <input type="hidden" id="kwitansiId" name="kwitansiId">
 
           <div class="mb-3">
-            <label for="nomor_invoice_kwitansi_edit" class="form-label">Nomor Invoice</label>
+            <label for="nomor_invoice_kwitansi_edit" class="form-label">Nomor invoiceLab</label>
             <input type="text" class="form-control" id="nomor_invoice_kwitansi_edit" name="nomor_invoice_kwitansi" required>
           </div>
 
@@ -280,10 +283,10 @@ function searchInvoice() {
                 });
 
             } else {
-                alert('Nomor Invoice tidak ditemukan');
+                alert('Nomor invoiceLab tidak ditemukan');
             }
         })
-        .catch(error => console.error('Error fetching invoice:', error));
+        .catch(error => console.error('Error fetching invoiceLab:', error));
 }
 function showImage(imageUrl) {
   
@@ -347,174 +350,115 @@ function editKwitansi(id) {
             @endforeach
           </ul>`,
           buatInvoice: `
-        <h2>Buat Invoice</h2>
-     <form id="invoiceForm" action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="mb-3">
-                <label for="no_invoice" class="form-label">Masukan Nomor Invoice</label>
-                <input type="text" class="form-control" id="no_invoice" name="no_invoice" required>
-                <button type="button" class="btn btn-success mt-2" onclick="searchInvoice()">Search</button>
-            </div>
+       <h2>Invoice Lab</h2>
+<form id="invoiceForm" action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
-            <div class="mb-3">
-                <label for="nama_perusahaan" class="form-label">Nama Perusahaan</label>
-                <input type="text" class="form-control" id="nama_perusahaan" name="nama_perusahaan" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="nama_proyek" class="form-label">Nama Proyek</label>
-                <input type="text" class="form-control" id="nama_proyek" name="nama_proyek" required>
-            </div>
-            
-
-            <div class="mb-3">
-                <label for="permohonan" class="form-label">Permohonan</label>
-                <input type="text" class="form-control" id="permohonan" name="permohonan" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="tanggal_datang" class="form-label">Tanggal Datang</label>
-                <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="teknisi" class="form-label">Teknisi</label>
-                <select class="form-control" id="teknisi" name="teknisi[]" multiple required>
-                </select>
-            </div>
-               <div class="mb-3">
-        <label for="jenis_material" class="form-label">Jenis Material</label>
-          <select class="form-control" id="jenis_material" name="jenis_material" required>
-            <option value="">Pilih Jenis Material</option>
-            @foreach ($pengujianData as $item)
-                <option value="{{ $item->jenis_material }}">
-                    {{ $item->jenis_material }} 
-                </option>
-            @endforeach
-        </select>
-
+    <!-- Upload Excel Fields -->
+    <div class="mb-3">
+        <label for="excel_lab" class="form-label">Upload Excel Lab</label>
+        <input type="file" class="form-control" id="excel_lab" name="excel_lab" accept=".xls,.xlsx">
     </div>
+
+    <div class="mb-3">
+        <label for="excel_lab_dengan_harga" class="form-label">Upload Excel Lab Dengan Harga</label>
+        <input type="file" class="form-control" id="excel_lab_dengan_harga" name="excel_lab_dengan_harga" accept=".xls,.xlsx">
+    </div>
+
    
-          <div class="mb-3">
-        <label for="jenis_pengujian" class="form-label">Jenis Pengujian</label>
-          <select class="form-control" id="jenis_pengujian" name="jenis_pengujian" required>
-            <option value="">Pilih Jenis Pengujian</option>
-            @foreach ($pengujianData as $item)
-                <option value="{{ $item->jenis_pengujian }}" data-harga_satuan="{{ $item->harga_satuan }}">
-                    {{ $item->jenis_pengujian }} - Harga Rp. {{ $item->harga_satuan }}
-                </option>
-            @endforeach
+
+    <!-- Teknisi Selection -->
+    <div class="mb-3 mt-4">
+        <label for="teknisi" class="form-label">Pilih Teknisi</label>
+        <select class="form-control" id="teknisi" name="teknisi[]" multiple required>
+            <option value="TEKNISI A">TEKNISI A</option>
+            <option value="TEKNISI B">TEKNISI B</option>
+            <option value="TEKNISI C">TEKNISI C</option>
+            <option value="TEKNISI D">TEKNISI D</option>
+            <option value="TEKNISI E">TEKNISI E</option>
+            <option value="TEKNISI F">TEKNISI F</option>
+            <option value="TEKNISI G">TEKNISI G</option>
+            <option value="TEKNISI H">TEKNISI H</option>
         </select>
-
     </div>
-         
-        <div class="mb-3">
-            <label for="jumlah" class="form-label">Jumlah</label>
-            <input type="number" class="form-control" id="jumlah" name="jumlah" required>
-            <button type="button" class="btn btn-info mt-2" id="hitungBtn">Hitung</button>
-        </div>
-
-        <div class="mb-3">
-            <label for="total_biaya" class="form-label">Total Biaya</label>
-            <input type="text" class="form-control" id="total_biaya" name="total_biaya" readonly>
-        </div>
-
-
-
-            <div class="mb-3">
-                <label for="jenis_pembayaran" class="form-label">Jenis Pembayaran</label>
-                <input type="text" class="form-control" id="jenis_pembayaran" name="jenis_pembayaran" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="bukti_pembayaran" class="form-label">Bukti Pembayaran</label>
-                <input type="file" class="form-control" id="bukti_pembayaran" name="bukti_pembayaran" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Simpan</button>
-        </form>`,
-        invoice: `<h2>Invoice</h2>
-     <!-- Filter Tanggal -->
-      <form action="{{ route('invoice.filter') }}" method="GET" class="mb-4">
-          <div class="row">
-              <div class="col-md-5">
-                  <label for="start_date" class="form-label">Tanggal Mulai</label>
-                  <input type="date" class="form-control" id="start_date" name="start_date" required>
-              </div>
-              <div class="col-md-5">
-                  <label for="end_date" class="form-label">Tanggal Akhir</label>
-                  <input type="date" class="form-control" id="end_date" name="end_date" required>
-              </div>
-              <div class="col-md-2 d-flex align-items-end">
-                  <button type="submit" class="btn btn-primary">Filter</button>
-              </div>
-          </div>
-      </form>
-
-      <div class="d-flex">
-          <form action="{{ url('invoice/export') }}" method="GET">
-              <input type="hidden" name="start_date" value="{{ request('start_date') }}">
-              <input type="hidden" name="end_date" value="{{ request('end_date') }}">
-              <button type="submit" class="btn btn-success {{ !request('start_date') || !request('end_date') ? 'disabled' : '' }}">
-                  Export to Excel
-              </button>
-          </form>
-          <button onclick="printTable()" class="btn btn-primary ms-2">Print</button>
-      </div>
-
-
-        <table class="table table-striped">
-        <thead>
+     <!-- Submit Button -->
+    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+</form>
+<h3>Uploaded Files and Teknisi</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Excel Lab</th>
+            <th>Excel Lab Dengan Harga</th>
+            <th>Teknisi</th>
+            <th>Created At</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($invoices as $index => $invoice)
             <tr>
-                <th>No Invoice</th>
-                <th>Nama Perusahaan</th>
-                <th>Nama Proyek</th>
-                 <th>Permohonan</th>
-                 <th>Tanggal Datang</th>
-                 <th>Jenis Material</th>
-                  <th>Jenis Pengujian</th>
-                  <th>Jenis Pembayaran</th>
-                <th>Teknisi</th>
-                <th>Total Biaya</th>
-                <th>Jumlah</th>
-               
-                <th>Bukti Pembayaran</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($invoices as $invoice)
-                <tr>
-                    <td>{{ $invoice->no_invoice }}</td>
-                    <td>{{ $invoice->nama_perusahaan }}</td>
-                    <td>{{ $invoice->nama_proyek }}</td>
-                    <td>{{ $invoice->permohonan }}</td>
-                    <td>{{ $invoice->tanggal_datang }}</td>
-                    <td>{{ $invoice->jenis_material }}</td>
-                    <td>{{ $invoice->jenis_pengujian }}</td>
-                    <td>{{ $invoice->jenis_pembayaran }}</td>
-                 
-                    <td>{{ $invoice->teknisi }}</td>
-                    <td>Rp. {{ number_format($invoice->total_biaya, 2) }}</td>
-                   <td>{{ $invoice->jumlah }}</td>
-                  <td>
-                        @if($invoice->bukti_pembayaran)
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#imageModal" onclick="showImage('{{ asset('storage/' . $invoice->bukti_pembayaran) }}')">
-                                <img src="{{ asset('storage/' . $invoice->bukti_pembayaran) }}" alt="Bukti Pembayaran" width="100" />
-                            </a>
-                        @else
-                            <span>No Image</span>
-                        @endif
-                  </td>
-                  <td>
-                 <a class="btn btn-primary" href="{{ route('invoice.cetak', $invoice->id) }}">Print</a>
-
+                <td>{{ $index + 1 }}</td>
+                <td>
+                    <a href="{{ asset('storage/' . $invoice->excel_lab) }}" target="_blank">
+                        {{ basename($invoice->excel_lab) }}
+                    </a>
                 </td>
+                <td>
+                    <a href="{{ asset('storage/' . $invoice->excel_lab_dengan_harga) }}" target="_blank">
+                        {{ basename($invoice->excel_lab_dengan_harga) }}
+                    </a>
+                </td>
+                <td>{{ $invoice->teknisi }}</td>
+                <td>{{ $invoice->created_at->format('d M Y H:i') }}</td>
+                  <td>
+                    <a href="{{ route('invoice-lab.edit', $invoice->id) }}" class="btn btn-warning">Edit</a>
+                </td>
+                <td>
+    <!-- Delete button -->
+              <form action="{{ route('invoice-lab.destroy', $invoice->id) }}" method="POST" style="display:inline;">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus invoice ini?')">Hapus</button>
+              </form>
+          </td>
 
-                </tr>
-            @endforeach
-        </tbody>
-    </table>`,
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+`,
+        dataPelanggan: `<h2>Data Pelanggan</h2>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>No invoiceLab</th>
+                          <th>Nama Perusahaan</th>
+                          <th>Nama Proyek</th>
+                          <th>Permohonan</th>
+                          <th>Tanggal Datang</th>
+                 
+                          <th>Keterangan</th>
+                          <th>Pembayaran</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach ($dataPelanggan as $pelanggan)
+                          <tr>
+                            <td>{{ $pelanggan->no_invoice }}</td>
+                            <td>{{ $pelanggan->nama_perusahaan }}</td>
+                            <td>{{ $pelanggan->nama_proyek }}</td>
+                            <td>{{ $pelanggan->permohonan }}</td>
+                            <td>{{ $pelanggan->tanggal_datang }}</td>
+                          
+                            <td>{{ $pelanggan->keterangan }}</td>
+                            <td>{{ $pelanggan->pembayaran }}</td>
+                          </tr>
+                        @endforeach
+                      </tbody>
+                    </table>`,
+      
         kas: `<h2>KAS</h2>
 <form action="{{ route('kas.submit') }}" method="POST">
          @csrf
@@ -606,8 +550,70 @@ function editKwitansi(id) {
                 @endforeach
             </tbody>
         </table>
-`,
-kwitansi: `<h2>Buat Kwitansi</h2>
+`,  
+    invoiceLapangan: `
+      <h2>Invoice Lapangan</h2>
+      <form id="invoiceLapanganForm" action="{{ route('invoice-lapangan.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="mb-3">
+          <label for="excel_lab" class="form-label">Upload Excel Lab</label>
+          <input type="file" class="form-control" id="excel_lab" name="excel_lab" accept=".xls,.xlsx">
+        </div>
+        <div class="mb-3">
+          <label for="excel_lab_dengan_harga" class="form-label">Upload Excel Lab Dengan Harga</label>
+          <input type="file" class="form-control" id="excel_lab_dengan_harga" name="excel_lab_dengan_harga" accept=".xls,.xlsx">
+        </div>
+        <div class="mb-3 mt-4">
+          <label for="teknisi" class="form-label">Pilih Teknisi</label>
+          <select class="form-control" id="teknisi" name="teknisi[]" multiple required>
+            <option value="TEKNISI A">TEKNISI A</option>
+            <option value="TEKNISI B">TEKNISI B</option>
+            <option value="TEKNISI C">TEKNISI C</option>
+            <option value="TEKNISI D">TEKNISI D</option>
+            <option value="TEKNISI E">TEKNISI E</option>
+            <option value="TEKNISI F">TEKNISI F</option>
+            <option value="TEKNISI G">TEKNISI G</option>
+            <option value="TEKNISI H">TEKNISI H</option>
+          </select>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3">Submit</button>
+      </form>
+      <h3>Daftar Invoice Lapangan</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>No</th>
+            <th>Excel Lab</th>
+            <th>Excel Lab Dengan Harga</th>
+            <th>Teknisi</th>
+            <th>Created At</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($invoicesLapangan as $index => $invoice)
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td><a href="{{ asset('storage/' . $invoice->excel_lab) }}" target="_blank">{{ basename($invoice->excel_lab) }}</a></td>
+            <td><a href="{{ asset('storage/' . $invoice->excel_lab_dengan_harga) }}" target="_blank">{{ basename($invoice->excel_lab_dengan_harga) }}</a></td>
+            <td>{{ $invoice->teknisi }}</td>
+            <td>{{ $invoice->created_at->format('d M Y H:i') }}</td>
+            <td>
+                <a href="{{ route('invoice-lapangan.edit', $invoice->id) }}" class="btn btn-warning">Edit</a>
+                <form action="{{ route('invoice-lapangan.destroy', $invoice->id) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger" onclick="return confirm('Apakah Anda yakin ingin menghapus invoice ini?')">Hapus</button>
+                  
+                </form>
+            </td>
+        </tr>
+        @endforeach
+    </tbody>
+</table>
+      `
+      ,
+      kwitansi: `<h2>Buat Kwitansi</h2>
 <p>Halaman untuk membuat Kwitansi.</p>
 <form id="kwitansiForm" action="{{ route('kwitansi.store') }}" method="POST">
   @csrf
@@ -807,35 +813,61 @@ function printTable() {
     `);
     newWindow.document.close();
 }
-function searchKwitansi() {
-  const nomorInvoice = document.getElementById('nomor_invoice_kwitansi').value;
 
 
-  fetch(`/data-kwitansi/${nomorInvoice}`)
-    .then(response => response.json())
-    .then(data => {
-      if (data) {
-        document.getElementById('supplier_kwitansi').value = data.nama_perusahaan; 
-        document.getElementById('proyek_kwitansi').value = data.nama_proyek;
-        document.getElementById('total_tagihan_kwitansi').value = data.total_biaya;
-        document.getElementById('jenis_pembayaran_kwitansi').value = data.jenis_pembayaran;
-  
-      } else {
-        alert('Nomor Invoice tidak ditemukan');
-      }
-    })
-    .catch(error => console.error('Error fetching kwitansi:', error));
+function editInvoiceLab(invoiceLabId) {
+    fetch(`/invoice-lab/${invoiceLabId}`)
+        .then(response => response.json())
+        .then(data => {
+            // Populate modal form fields with Invoice Lab data
+            document.getElementById('invoiceLabId').value = data.id;
+            document.getElementById('excel_lab_edit').value = data.excel_lab;  // You might need to display the file name or something else
+            document.getElementById('excel_lab_dengan_harga_edit').value = data.excel_lab_dengan_harga;  // Same as above
+            
+            // Populate Teknisi list
+            let teknisiSelect = document.getElementById('teknisi_edit');
+            teknisiSelect.innerHTML = '';  // Clear existing options
+
+            let teknisiList = data.teknisi.split(',');
+
+            teknisiList.forEach(teknisi => {
+                let option = document.createElement("option");
+                option.value = teknisi.trim();  
+                option.text = teknisi.trim();
+                option.selected = true;  
+                teknisiSelect.appendChild(option);
+            });
+
+            // Set the form action URL for the PUT request (dynamic route)
+            document.getElementById('editInvoiceLabForm').action = `/invoice-lab/${invoiceLabId}`;
+        })
+        .catch(error => console.error('Error fetching Invoice Lab data:', error));
 }
 
+function searchKwitansi() {
+        const nomorInvoice = document.getElementById('nomor_invoice_kwitansi').value;
 
-
-
+        fetch(`/data-kwitansi/${nomorInvoice}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data) {
+                    document.getElementById('supplier_kwitansi').value = data.nama_perusahaan;
+                    document.getElementById('proyek_kwitansi').value = data.nama_proyek;
+                    document.getElementById('total_tagihan_kwitansi').value = data.total_biaya;
+                    document.getElementById('jenis_pembayaran_kwitansi').value = data.jenis_pembayaran;
+                    document.getElementById('untuk_pembayaran_kwitansi').value = data.untuk_pembayaran;
+                } else {
+                    alert('Nomor Invoice tidak ditemukan');
+                }
+            })
+            .catch(error => console.error('Error fetching kwitansi:', error));
+    }
 
 
     @if (session('success-buat-invoice'))
             Swal.fire({
                 title: "Invoice Di Buat!",
-                text: "Berhasil menyimpan invoice",
+                text: "Berhasil menyimpan invoiceLab",
                 icon: "success",
                 confirmButtonColor: "#28a745",
             }).then(() => {
@@ -872,6 +904,16 @@ function searchKwitansi() {
                 showContent('kas');
             });
             @endif
+        @if (session('success-edit-invoicelab'))
+            Swal.fire({
+                title: "Edit Berhasil",
+                text: "Data invoice lab telah diperbarui",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('buatInvoice');
+            });
+            @endif
         @if (session('success-edit-kwitansi'))
             Swal.fire({
                 title: "Edit Berhasil",
@@ -882,6 +924,16 @@ function searchKwitansi() {
                 showContent('kwitansi');
             });
         @endif
+        @if (session('success-edit-lapangan'))
+            Swal.fire({
+                title: "Edit Berhasil",
+                text: "Data invoice lapangan telah diperbarui",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('invoiceLapangan');
+            });
+        @endif
         @if (session('success-simpan-kwitansi'))
             Swal.fire({
                 title: "Berhasil",
@@ -890,6 +942,16 @@ function searchKwitansi() {
                 confirmButtonColor: "#28a745",
             }).then(() => {
                 showContent('kwitansi');
+            });
+        @endif
+        @if (session('success-buat-invoice-lapangan'))
+            Swal.fire({
+                title: "Berhasil",
+                text: "Data invoice lapangan telah di simpan",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('invoiceLapangan');
             });
         @endif
         @if (session('success-kirim-kepalalab'))
@@ -912,7 +974,28 @@ function searchKwitansi() {
                 showContent('kwitansi');
             });
         @endif
-          
+        @if (session('success-hapus-invoicelab'))
+            Swal.fire({
+                title: " Berhasil",
+                text: "Data invoice lab telah di hapus",
+                icon: "warning",
+                confirmButtonColor: "#dc3545",
+            }).then(() => {
+                showContent('buatInvoice');
+            });
+        @endif
+        @if (session('success-hapus-invoice-lapangan'))
+            Swal.fire({
+                title: " Berhasil",
+                text: "Data invoice lapangan telah di hapus",
+                icon: "warning",
+                confirmButtonColor: "#dc3545",
+            }).then(() => {
+                showContent('invoiceLapangan');
+            });
+        @endif
+      
+
   </script>
 
 </body>

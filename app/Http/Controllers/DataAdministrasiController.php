@@ -8,7 +8,9 @@ use App\Models\Kwitansi;
 use App\Models\Pengujian;
 use Illuminate\Http\Request;
 use App\Models\DataPelanggan;
+use App\Models\InvoiceLapangan;
 use App\Models\DataAdministrasi;
+use App\Models\DataPelangganBendahara;
 use Illuminate\Support\Facades\Storage;
 
 
@@ -24,6 +26,7 @@ class DataAdministrasiController extends Controller
         $files = DataAdministrasi::orderBy('created_at', 'desc')->get();
         $pelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
         $invoices = Invoice::orderBy('created_at', 'desc')->get();
+
    
         return view('index-admin', compact('files', 'pelanggan', 'invoices'));
     }
@@ -36,7 +39,9 @@ class DataAdministrasiController extends Controller
         $invoices = Invoice::orderBy('created_at', 'desc')->get();
         $kasData = Kas::orderBy('created_at', 'desc')->get();
         $kwitansis = Kwitansi::orderBy('created_at', 'desc')->get();
-        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData','invoices','kasData','kwitansis'));
+        $dataPelanggan = DataPelangganBendahara::orderBy('created_at', 'desc')->get();
+        $invoicesLapangan = InvoiceLapangan::orderBy('created_at', 'desc')->get();
+        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData','invoices','kasData','kwitansis','dataPelanggan','invoicesLapangan'));
     }
     
     public function upload(Request $request)

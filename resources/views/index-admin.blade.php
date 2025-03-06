@@ -185,18 +185,32 @@
             <input type="date" class="form-control" id="edit_tanggal_datang" name="tanggal_datang" required>
           </div>
           <div class="mb-3">
-            <label for="edit_teknisi" class="form-label">Teknisi</label>
-            <select class="form-control" id="edit_teknisi" name="teknisi[]" multiple required>
-              <option value="TEKNISI A">TEKNISI A</option>
-              <option value="TEKNISI B">TEKNISI B</option>
-              <option value="TEKNISI C">TEKNISI C</option>
-              <option value="TEKNISI D">TEKNISI D</option>
-              <option value="TEKNISI E">TEKNISI E</option>
-              <option value="TEKNISI F">TEKNISI F</option>
-              <option value="TEKNISI G">TEKNISI G</option>
-              <option value="TEKNISI H">TEKNISI H</option>
+            <label for="edit_kegiatan" class="form-label">Kegiatan</label>
+            <select class="form-control" id="edit_kegiatan" name="kegiatan" required>
+              <option value="Lapangan">Lapangan</option>
+              <option value="Lab">Lab</option>
             </select>
           </div>
+
+          <!-- Pembayaran -->
+          <div class="mb-3">
+            <label for="edit_pembayaran" class="form-label">Pembayaran</label>
+            <select class="form-control" id="edit_pembayaran" name="pembayaran" required>
+              <option value="Transfer">Transfer</option>
+              <option value="VA">VA</option>
+              <option value="Tunai">Tunai</option>
+            </select>
+          </div>
+
+          <!-- Keterangan -->
+          <div class="mb-3">
+            <label for="edit_keterangan" class="form-label">Keterangan</label>
+            <select class="form-control" id="edit_keterangan" name="keterangan" required>
+              <option value="TKS">TKS</option>
+              <option value="Non TKS">Non TKS</option>
+            </select>
+          </div>
+
           <button type="submit" class="btn btn-primary">Update</button>
         </form>
       </div>
@@ -233,24 +247,25 @@ function openEditModal(id) {
     fetch(`/data-pelanggan/${id}/edit`)
         .then(response => response.json())
         .then(data => {
-            // Set values untuk form fields
+       
             document.getElementById('edit_no_invoice').value = data.no_invoice;
             document.getElementById('edit_nama_perusahaan').value = data.nama_perusahaan;
             document.getElementById('edit_nama_proyek').value = data.nama_proyek;
             document.getElementById('edit_permohonan').value = data.permohonan;
             document.getElementById('edit_tanggal_datang').value = data.tanggal_datang;
 
-            // Menangani multiple select (Teknisi)
-            let teknisiOptions = document.getElementById('edit_teknisi').options;
-            let selectedTeknisi = data.teknisi.split(',');  // Jika teknisi disimpan sebagai string yang dipisah koma
-            for (let option of teknisiOptions) {
-                option.selected = selectedTeknisi.includes(option.value);
-            }
+        
+     
+            document.getElementById('edit_kegiatan').value = data.kegiatan;
 
-            // Set action URL untuk form
+ 
+            document.getElementById('edit_pembayaran').value = data.pembayaran;
+
+            document.getElementById('edit_keterangan').value = data.keterangan;
+      
             document.getElementById('editForm').action = `/data-pelanggan/${id}`;
 
-            // Buka modal setelah mengisi form
+ 
             $('#editModal').modal('show');
         })
         .catch(error => console.error('Error fetching data:', error));
@@ -363,19 +378,36 @@ function printTable() {
                     <input type="date" class="form-control" id="tanggal_datang" name="tanggal_datang" required>
                 </div>
                <div class="mb-3">
-    <label for="teknisi" class="form-label">Teknisi</label>
-<select class="form-control" id="teknisi" name="teknisi[]" multiple required>
-  <option value="TEKNISI A">TEKNISI A</option>
-  <option value="TEKNISI B">TEKNISI B</option>
-  <option value="TEKNISI C">TEKNISI C</option>
-  <option value="TEKNISI D">TEKNISI D</option>
-  <option value="TEKNISI E">TEKNISI E</option>
-  <option value="TEKNISI F">TEKNISI F</option>
-  <option value="TEKNISI G">TEKNISI G</option>
-  <option value="TEKNISI H">TEKNISI H</option>
-</select>
+
+
 
 </div>
+    <div class="mb-3">
+        <label for="kegiatan" class="form-label">Kegiatan</label>
+        <select class="form-control" id="kegiatan" name="kegiatan" required>
+            <option value="Lapangan">Lapangan</option>
+            <option value="Lab">Lab</option>
+        </select>
+    </div>
+
+    <!-- Dropdown Pembayaran -->
+    <div class="mb-3">
+        <label for="pembayaran" class="form-label">Pembayaran</label>
+        <select class="form-control" id="pembayaran" name="pembayaran" required>
+            <option value="Transfer">Transfer</option>
+            <option value="VA">VA</option>
+            <option value="Tunai">Tunai</option>
+        </select>
+    </div>
+
+    <!-- Dropdown Keterangan -->
+    <div class="mb-3">
+        <label for="keterangan" class="form-label">Keterangan</label>
+        <select class="form-control" id="keterangan" name="keterangan" required>
+            <option value="TKS">TKS</option>
+            <option value="Non TKS">Non TKS</option>
+        </select>
+    </div>
 
                 <button type="submit" class="btn btn-primary">Tambah Data</button>
             </form>
@@ -396,6 +428,7 @@ function printTable() {
                       <div class="col-md-2 d-flex align-items-end">
                           <button type="submit" class="btn btn-primary">Filter</button>
                       </div>
+                      
                   </div>
               </form>
               <div class="d-flex">
@@ -419,7 +452,9 @@ function printTable() {
             <th>Nama Proyek</th>
             <th>Permohonan</th>
             <th>Tanggal Datang</th>
-            <th>Teknisi</th>
+            <th>Kegiatan</th>
+            <th>Pembayaran</th>
+            <th>Keterangan</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -433,6 +468,9 @@ function printTable() {
                 <td>{{ $item->permohonan }}</td>
                 <td>{{ \Carbon\Carbon::parse($item->tanggal_datang)->format('d M Y') }}</td>
                 <td>{{ $item->teknisi }}</td>
+                <td>{{ $item->kegiatan }}</td>
+                <td>{{ $item->pembayaran }}</td>
+                <td>{{ $item->keterangan }}</td>
                <td>
     <!-- Dropdown Menu for Actions -->
     <div class="dropdown">

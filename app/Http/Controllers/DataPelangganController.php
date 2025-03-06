@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use Illuminate\Http\Request;
 use App\Models\DataPelanggan;
+use App\Models\InvoiceLapangan;
+use App\Models\LembarPengujian;
 use App\Models\DataPelangganTeknisi;
 use App\Models\DataPelangganBendahara;
 
@@ -20,8 +23,10 @@ class DataPelangganController extends Controller
             'nama_proyek' => 'required',
             'permohonan' => 'required',
             'tanggal_datang' => 'required|date',
-           'teknisi' => 'required|array',
-           'teknisi.*' => 'string',
+           'kegiatan' => 'required|string',
+           'pembayaran' => 'required|string',
+           'keterangan' => 'required|string',
+           
         ]);
 
  
@@ -31,7 +36,9 @@ class DataPelangganController extends Controller
             'nama_proyek' => $request->nama_proyek,
             'permohonan' => $request->permohonan,
             'tanggal_datang' => $request->tanggal_datang,
-            'teknisi' => implode(',', $request->teknisi), 
+            'kegiatan' => $request->kegiatan,
+            'pembayaran' => $request->pembayaran,
+            'keterangan' => $request->keterangan,
         ]);
 
         return redirect()->back()->with('success-simpan-pelanggan', 'Behasil');
@@ -57,11 +64,12 @@ class DataPelangganController extends Controller
         'nama_proyek' => 'required|string',
         'permohonan' => 'required|string',
         'tanggal_datang' => 'required|date',
-        'teknisi' => 'required|array',
-        'teknisi.*' => 'string',
-        
+        'kegiatan' => 'required|string',
+        'pembayaran' => 'required|string',
+        'keterangan' => 'required|string',
+    
     ]);
-    $validatedData['teknisi'] = implode(',', $request->teknisi);
+
 
     $pelanggan->update($validatedData);
 
@@ -78,8 +86,8 @@ class DataPelangganController extends Controller
     public function sendToBendahara($id)
     {
         $pelanggan = DataPelanggan::findOrFail($id);
-    
-    
+     
+        
         DataPelangganBendahara::create([
             'data_pelanggan_id' => $pelanggan->id,
             'no_invoice' => $pelanggan->no_invoice,
@@ -89,7 +97,9 @@ class DataPelangganController extends Controller
             'tanggal_datang' => $pelanggan->tanggal_datang,
             'created_at' => $pelanggan->created_at,
             'updated_at' => $pelanggan->updated_at,
-            'teknisi' => $pelanggan->teknisi,
+            'kegiatan' => $pelanggan->kegiatan,
+            'pembayaran' => $pelanggan->pembayaran,
+            'keterangan' => $pelanggan->keterangan,
         ]);
     
    
@@ -103,7 +113,7 @@ class DataPelangganController extends Controller
     public function sendToTeknisi($id)
     {
         $pelanggan = DataPelanggan::findOrFail($id);
-    
+
       
         DataPelangganTeknisi::create([
             'data_pelanggan_id' => $pelanggan->id,
@@ -114,7 +124,10 @@ class DataPelangganController extends Controller
             'tanggal_datang' => $pelanggan->tanggal_datang,
             'created_at' => $pelanggan->created_at,
             'updated_at' => $pelanggan->updated_at,
-            'teknisi' => $pelanggan->teknisi,
+            'kegiatan' => $pelanggan->kegiatan,
+            'pembayaran' => $pelanggan->pembayaran,
+            'keterangan' => $pelanggan->keterangan,
+
         ]);
     
      
@@ -146,6 +159,15 @@ class DataPelangganController extends Controller
             return response()->json($data);
         }
         return response()->json(null);
+    }
+    public function indexTeknisi()
+    {
+       
+        $dataPelanggan = DataPelangganTeknisi::orderBy('created_at', 'desc')->get();
+        $pdfFiles = LembarPengujian::orderBy('created_at', 'desc')->get();
+        $invoiceLabs = Invoice::orderBy('created_at', 'desc')->get();
+        $invoiceLapangan = InvoiceLapangan::orderBy('created_at', 'desc')->get();
+        return view('index-teknisi', compact('dataPelanggan', 'pdfFiles', 'invoiceLabs', 'invoiceLapangan'));
     }
     
 }

@@ -3,6 +3,7 @@
 use App\Models\Invoice;
 
 use Illuminate\Http\Request;
+use App\Models\DataPelanggan;
 use App\Exports\InvoicesExport;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Route;
@@ -13,6 +14,8 @@ use App\Http\Controllers\KwitansiController;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\PengujianController;
 use App\Http\Controllers\DataPelangganController;
+use App\Http\Controllers\InvoiceLapanganController;
+use App\Http\Controllers\LembarPengujianController;
 use App\Http\Controllers\DataAdministrasiController;
 
 Route::get('/', function () {
@@ -73,6 +76,13 @@ Route::post('/kwitansi/{id}/send', [KwitansiController::class, 'sendToKepalaLab'
 
 Route::delete('/kwitansi/{id}', [KwitansiController::class, 'destroy'])->name('kwitansi.destroy');
 
+Route::delete('/lembar-pengujian/{id}', [LembarPengujianController::class, 'destroy'])->name('lembarPengujian.destroy');
+
+
+Route::post('/lembar-pengujian/{id}/kirim', [LembarPengujianController::class, 'kirim'])->name('lembarPengujian.kirim');
+Route::get('invoice-lab', [InvoiceController::class, 'indexInvoiceLab'])->name('invoice-lab');
+Route::get('invoice-lapangan', [InvoiceController::class, 'indexInvoiceLapangan'])->name('invoice-lapangan');
+
 
 Route::get('/login-teknisi', function () {
     return view('login-teknisi');
@@ -80,8 +90,8 @@ Route::get('/login-teknisi', function () {
 
 Route::post('/verify-teknisi', [KeyController::class, 'verifyTeknisi'])->name('verify.teknisi');
 
-Route::get('/dashboard-teknisi', [KeyController::class, 'indexTeknisi'])->name('dashboard.teknisi');
-
+Route::get('/dashboard-teknisi', [DataPelangganController::class, 'indexTeknisi'])->name('dashboard.teknisi');
+Route::post('lembar-pengujian/upload', [LembarPengujianController::class, 'uploadPDF'])->name('lembar-pengujian.upload');
 Route::get('/login-pencetak', function () {
     return view('login-pencetak'); 
 })->name('login.pencetak');
@@ -150,6 +160,21 @@ Route::post('/invoice', [InvoiceController::class, 'store'])->name('invoice.stor
 Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
 
 
+Route::get('/invoice-lab/{invoiceLabId}/edit', [InvoiceController::class, 'edit'])->name('invoice-lab.edit');
+
+// This route will handle the update (POST method)
+Route::post('/invoice-lab/{invoiceLabId}', [InvoiceController::class, 'update'])->name('invoice-lab.update');
+
+
+Route::delete('/invoice/{id}', [InvoiceController::class, 'destroy'])->name('invoice-lab.destroy');
+
+
+
+  // For handling the form submission (update)
+
+
+
+
 
 
 // web.php
@@ -186,3 +211,17 @@ Route::get('/kwitansi/create', [KwitansiController::class, 'create'])->name('kwi
 
 
 Route::post('/kwitansi', [KwitansiController::class, 'store'])->name('kwitansi.store');
+// Route untuk menampilkan form create Invoice Lapangan
+Route::get('/invoice-lapangan/create', [InvoiceLapanganController::class, 'create'])->name('invoice-lapangan.create');
+
+// Route untuk menyimpan Invoice Lapangan
+Route::post('/invoice-lapangan', [InvoiceLapanganController::class, 'store'])->name('invoice-lapangan.store');
+
+// Route untuk menampilkan form edit Invoice Lapangan
+Route::get('/invoice-lapangan/{id}/edit', [InvoiceLapanganController::class, 'edit'])->name('invoice-lapangan.edit');
+
+// Route untuk memperbarui Invoice Lapangan
+Route::put('/invoice-lapangan/{id}', [InvoiceLapanganController::class, 'update'])->name('invoice-lapangan.update');
+
+// Route untuk menghapus Invoice Lapangan
+Route::delete('/invoice-lapangan/{id}', [InvoiceLapanganController::class, 'destroy'])->name('invoice-lapangan.destroy');

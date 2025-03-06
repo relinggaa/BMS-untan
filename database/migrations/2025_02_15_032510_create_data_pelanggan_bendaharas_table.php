@@ -19,7 +19,9 @@ return new class extends Migration
             $table->string('nama_proyek');
             $table->string('permohonan');
             $table->date('tanggal_datang');
-            $table->string('teknisi');
+            $table->string('kegiatan'); 
+            $table->string('pembayaran'); 
+            $table->string('keterangan'); 
             $table->timestamps();
         });
     }

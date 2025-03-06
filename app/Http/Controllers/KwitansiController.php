@@ -8,6 +8,7 @@ use App\Models\Invoice;
 use App\Models\Kwitansi;
 use Illuminate\Http\Request;
 use App\Models\KwitansiKepalaLab;
+use App\Models\DataPelangganBendahara;
 
 class KwitansiController extends Controller
 {
@@ -15,7 +16,7 @@ class KwitansiController extends Controller
     {
     
         $request->validate([
-            'nomor_invoice_kwitansi' => 'required|exists:invoices,no_invoice',
+            'nomor_invoice_kwitansi' => 'required|exists:data_pelanggan_bendaharas,no_invoice',
             'supplier_kwitansi' => 'required|string|max:255',
             'proyek_kwitansi' => 'required|string|max:255',
             'total_tagihan_kwitansi' => 'required|numeric',
@@ -35,24 +36,7 @@ class KwitansiController extends Controller
 
         return redirect()->back()->with('success-simpan-kwitansi', 'Kwitansi berhasil disimpan');
     }
-    public function getKwitansiData($nomorInvoice)
-    {
-        
-        $invoice = Invoice::where('no_invoice', $nomorInvoice)->first();
 
-        if ($invoice) {
-            return response()->json([
-                'nama_perusahaan' => $invoice->nama_perusahaan,
-                'nama_proyek' => $invoice->nama_proyek,
-                'total_biaya' => $invoice->total_biaya,
-                'jenis_pembayaran' => $invoice->jenis_pembayaran,
-           
-            ]);
-        }
-
-   
-        return response()->json(null, 404);
-    }
     public function update(Request $request, $id)
     {
         $kwitansi = Kwitansi::findOrFail($id);
@@ -119,6 +103,24 @@ public function sendToKepalaLab($id)
 
     return redirect()->route('dashboard.bendahara')->with('success-kirim-kepalalab', 'Kwitansi telah dikirim ke Kepala Lab');
 }
+public function getKwitansiData($nomorInvoice)
+{
+ 
+    $data = DataPelangganBendahara::where('no_invoice', $nomorInvoice)->first();
 
+    if ($data) {
+      
+        return response()->json([
+            'nama_perusahaan' => $data->nama_perusahaan,
+            'nama_proyek' => $data->nama_proyek,
+            'total_biaya' => $data->total_biaya, 
+            'jenis_pembayaran' => $data->jenis_pembayaran,
+            'untuk_pembayaran' => $data->untuk_pembayaran
+        ]);
+    } else {
+      
+        return response()->json(null);
+    }
+}
 
 }
