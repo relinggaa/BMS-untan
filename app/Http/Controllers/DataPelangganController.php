@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Invoice;
+use App\Models\Laporan;
 use Illuminate\Http\Request;
 use App\Models\DataPelanggan;
 use App\Models\InvoiceLapangan;
 use App\Models\LembarPengujian;
 use App\Models\DataPelangganTeknisi;
 use App\Models\DataPelangganBendahara;
+use App\Models\LembarPengujianPelaporan;
 
 class DataPelangganController extends Controller
 {
@@ -169,5 +171,15 @@ class DataPelangganController extends Controller
         $invoiceLapangan = InvoiceLapangan::orderBy('created_at', 'desc')->get();
         return view('index-teknisi', compact('dataPelanggan', 'pdfFiles', 'invoiceLabs', 'invoiceLapangan'));
     }
+    public function indexPelaporan()
+    {
     
+        $dataPelanggan = DataPelanggan::orderBy('created_at', 'desc')->get();
+        $lembarPengujianPelaporan = LembarPengujianPelaporan::with('lembarPengujian')->orderBy('created_at', 'desc')->get();
+        $invoices = Invoice::orderBy('created_at', 'desc')->get(); 
+        $invoiceLapangan = InvoiceLapangan::orderBy('created_at', 'desc')->get();
+        $laporanFiles = Laporan::orderBy('created_at', 'desc')->get(); 
+        return view('index-pelaporan', compact('dataPelanggan', 'lembarPengujianPelaporan', 'invoices', 'invoiceLapangan','laporanFiles'));
+    }
+
 }

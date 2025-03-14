@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KasController;
 use App\Http\Controllers\KeyController;
 use App\Http\Controllers\InvoiceController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\KwitansiController;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\PengujianController;
@@ -80,8 +81,7 @@ Route::delete('/lembar-pengujian/{id}', [LembarPengujianController::class, 'dest
 
 
 Route::post('/lembar-pengujian/{id}/kirim', [LembarPengujianController::class, 'kirim'])->name('lembarPengujian.kirim');
-Route::get('invoice-lab', [InvoiceController::class, 'indexInvoiceLab'])->name('invoice-lab');
-Route::get('invoice-lapangan', [InvoiceController::class, 'indexInvoiceLapangan'])->name('invoice-lapangan');
+
 
 
 Route::get('/login-teknisi', function () {
@@ -121,7 +121,7 @@ Route::get('/login-pelaporan', function () {
     return view('login-pelaporan'); 
 })->name('login.pelaporan');
 Route::post('/verify-pelaporan', [KeyController::class, 'verifyPelaporan'])->name('verify.pelaporan');
-Route::get('/dashboard-pelaporan', [KeyController::class, 'indexPelaporan'])->name('dashboard.pelaporan');
+Route::get('/dashboard-pelaporan', [DataPelangganController::class, 'indexPelaporan'])->name('dashboard.pelaporan');
 Route::get('/login-penyelia', function () {
     return view('login-penyelia');
 })->name('login.penyelia');
@@ -129,8 +129,9 @@ Route::get('/login-penyelia', function () {
 Route::post('/verify-penyelia', [KeyController::class, 'verifyPenyelia'])->name('verify.penyelia');
 
 Route::get('/dashboard-penyelia', [KeyController::class, 'indexPenyelia'])->name('dashboard.penyelia');
-
-
+Route::post('/laporan/upload', [LaporanController::class, 'upload'])->name('laporan.upload');
+Route::delete('/laporan/{id}', [LaporanController::class, 'delete'])->name('laporan.delete');
+Route::post('/laporan/send-to-penyelia/{id}', [LaporanController::class, 'sendToPenyelia'])->name('laporan.sendToPenyelia');
 Route::get('/pengujian/create', [PengujianController::class, 'create'])->name('pengujian.create');  
 Route::post('/pengujian', [PengujianController::class, 'store'])->name('pengujian.store');  
 Route::get('/pengujian/{id}/edit', [PengujianController::class, 'edit'])->name('pengujian.edit');
