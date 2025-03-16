@@ -16,6 +16,7 @@ use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\PengujianController;
 use App\Http\Controllers\DataPelangganController;
 use App\Http\Controllers\InvoiceLapanganController;
+use App\Http\Controllers\LaporanPenyeliaController;
 use App\Http\Controllers\LembarPengujianController;
 use App\Http\Controllers\DataAdministrasiController;
 
@@ -126,9 +127,15 @@ Route::get('/login-penyelia', function () {
     return view('login-penyelia');
 })->name('login.penyelia');
 
+
+
+Route::post('/laporan/{id}/catatan', [LaporanPenyeliaController::class, 'storeCatatan'])->name('laporan.storeCatatan');
+
+
+
 Route::post('/verify-penyelia', [KeyController::class, 'verifyPenyelia'])->name('verify.penyelia');
 
-Route::get('/dashboard-penyelia', [KeyController::class, 'indexPenyelia'])->name('dashboard.penyelia');
+Route::get('/dashboard-penyelia', [LaporanPenyeliaController::class, 'indexPenyelia'])->name('dashboard.penyelia');
 Route::post('/laporan/upload', [LaporanController::class, 'upload'])->name('laporan.upload');
 Route::delete('/laporan/{id}', [LaporanController::class, 'delete'])->name('laporan.delete');
 Route::post('/laporan/send-to-penyelia/{id}', [LaporanController::class, 'sendToPenyelia'])->name('laporan.sendToPenyelia');

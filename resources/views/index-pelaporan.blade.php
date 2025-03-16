@@ -10,10 +10,10 @@
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
   <link rel="stylesheet" href="/dashboard/assets/css/demo.css" />
   <link rel="stylesheet" href="/dashboard/assets/vendor/css/pages/page-auth.css" />
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
   <script src="/dashboard/assets/vendor/js/helpers.js"></script>
   <script src="/dashboard/assets/js/config.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <style>
       #layout-menu ul li a {
@@ -64,7 +64,7 @@
       
       <!-- Main Content -->
       <div class="flex-grow-1">
-        <!-- Navbar (Tampil di Mobile) -->
+  
         <nav class="navbar navbar-expand-lg navbar-light d-lg-none bg-menu-theme">
           <div class="container-fluid">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -88,7 +88,7 @@
         </nav>
       <!-- / Menu -->
       <div id="mainContent">
-        <h2>Select a section from the menu</h2>
+        <h2>Berhasil Login Pelaporan</h2>
       </div>
 
          
@@ -292,6 +292,37 @@ laporan: `
         console.error('Elemen #mainContent tidak ditemukan');
       }
     }
+    
+    @if (session('success-upload-laporan'))
+            Swal.fire({
+                title: "Behasil!",
+                text: "Laporan Behasil Di Upload",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('laporan');
+            });
+            @endif
+    @if (session('success-kirim-laporan'))
+            Swal.fire({
+                title: "Behasil!",
+                text: "Laporan Behasil Di Kirim",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('laporan');
+            });
+            @endif
+    @if (session('success-delete-laporan'))
+            Swal.fire({
+                title: "Behasil!",
+                text: "Laporan Behasil Di Upload",
+                icon: "warning",
+             confirmButtonColor: "#dc3545"",
+            }).then(() => {
+                showContent('laporan');
+            });
+        @endif
   </script>
 </body>
 </html>

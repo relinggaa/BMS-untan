@@ -32,7 +32,7 @@ class LaporanController extends Controller
             ]);
         }
     
-        return redirect()->route('dashboard.pelaporan')->with('success-upload', 'PDF uploaded successfully.');
+        return redirect()->route('dashboard.pelaporan')->with('success-upload-laporan', 'PDF uploaded successfully.');
     }
 
 
@@ -48,7 +48,7 @@ class LaporanController extends Controller
     
         $laporan->delete();
 
-        return redirect()->route('dashboard.pelaporan')->with('success-delete', 'File deleted successfully.');
+        return redirect()->route('dashboard.pelaporan')->with('success-delete-laporan', 'File deleted successfully.');
     }
     public function sendToPenyelia($id)
     {
@@ -66,7 +66,7 @@ class LaporanController extends Controller
         $laporan->sent_to_penyelia = true;
         $laporan->save();
         
-        return redirect()->route('laporan.index')->with('success', 'Laporan sent to penyelia.');
+        return redirect()->route('dashboard.pelaporan')->with('success-kirim-laporan', 'Laporan sent to penyelia.');
     }
     
     

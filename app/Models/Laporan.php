@@ -18,4 +18,8 @@ class Laporan extends Model
     {
         return $this->hasMany(LaporanPenyelia::class);
     }
+    public function catatan()
+    {
+        return $this->hasMany(PelaporanCatatan::class, 'laporan_id');
+    }
 }
