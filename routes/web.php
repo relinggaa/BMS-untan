@@ -237,3 +237,4 @@ Route::delete('/invoice-lapangan/{id}', [InvoiceLapanganController::class, 'dest
 // routes/web.php
 
 Route::post('/accept-kwitansi/{id}', [KwitansiAccController::class, 'accept'])->name('kwitansi.accept');
+Route::get('/kwitansi/{id}', [KwitansiController::class, 'showDetail'])->name('kwitansi.detail');

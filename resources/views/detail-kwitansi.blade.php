@@ -12,7 +12,7 @@
             padding: 0;
         }
         .container {
-            width: 40%;
+            width: 50%;
             margin: 0 auto;
         }
         .header {
@@ -91,38 +91,35 @@
 
         <h4 class="text-center">KWITANSI</h4>
 
+        <!-- Tabel Data Kwitansi -->
         <table class="table">
             <tr>
-                <td><strong>Nomor</strong></td>
-                <td>{{ $kwitansi->nomor }}</td>
+                <th>Nomor Invoice</th>
+                <td>{{ $kwitansi->nomor_invoice }}</td>
             </tr>
             <tr>
-                <td><strong>Supplier</strong></td>
+                <th>Supplier</th>
                 <td>{{ $kwitansi->supplier }}</td>
             </tr>
             <tr>
-                <td><strong>Proyek</strong></td>
+                <th>Proyek</th>
                 <td>{{ $kwitansi->proyek }}</td>
             </tr>
             <tr>
-                <td><strong>Total Tagihan</strong></td>
-                <td>Rp {{ number_format($kwitansi->total_tagihan, 0, ',', '.') }}</td>
+                <th>Total Tagihan</th>
+                <td>Rp. {{ number_format($kwitansi->total_tagihan, 2) }}</td>
             </tr>
             <tr>
-                <td><strong>Pembayaran DP</strong></td>
-                <td>Rp {{ number_format($kwitansi->pembayaran_dp, 0, ',', '.') }}</td>
+                <th>Jenis Pembayaran</th>
+                <td>{{ $kwitansi->jenis_pembayaran }}</td>
             </tr>
             <tr>
-                <td><strong>Sisa Pembayaran</strong></td>
-                <td>Rp {{ number_format($kwitansi->sisa_pembayaran, 0, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <td><strong>Untuk Pembayaran</strong></td>
+                <th>Untuk Pembayaran</th>
                 <td>{{ $kwitansi->untuk_pembayaran }}</td>
             </tr>
             <tr>
-                <td><strong>Tanggal</strong></td>
-                <td>{{ \Carbon\Carbon::parse($kwitansi->tanggal)->format('d F Y') }}</td>
+                <th>Tanggal</th>
+                <td>{{ \Carbon\Carbon::parse($kwitansi->created_at)->format('d-m-Y') }}</td>
             </tr>
         </table>
 

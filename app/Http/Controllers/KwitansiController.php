@@ -6,6 +6,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Invoice; 
 use App\Models\Kwitansi;
+use App\Models\KwitansiAcc;
 use Illuminate\Http\Request;
 use App\Models\KwitansiKepalaLab;
 use App\Models\DataPelangganBendahara;
@@ -121,6 +122,11 @@ public function getKwitansiData($nomorInvoice)
       
         return response()->json(null);
     }
+}
+public function showDetail($id)
+{
+    $kwitansi = KwitansiAcc::findOrFail($id);
+    return view('detail-kwitansi', compact('kwitansi'));
 }
 
 }

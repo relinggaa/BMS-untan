@@ -75,6 +75,8 @@
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('invoice')"><i class="menu-icon bx bx-notepad"></i>Daftar invoiceLab</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('kas')"><i class="menu-icon bx bx-notepad"></i>Buat KAS</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('kwitansi')"><i class="menu-icon bx bx-file"></i>Buat Kwitansi</a></li>
+          <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('cetakKwitansi')"><i class="menu-icon bx bx-printer"></i>Cetak Kwitansi</a></li>
+
           <li class="nav-item">
             <form action="{{ route('logout') }}" method="POST">
               @csrf
@@ -104,6 +106,8 @@
           <li><a href="#" class="menu-link" onclick="showContent('invoiceLapangan')"><i class="menu-icon bx bx-notepad"></i>Buat invoice lapangan</a></li>
           <li><a href="#" class="menu-link" onclick="showContent('kas')"><i class="menu-icon bx bx-notepad"></i>Buat KAS</a></li>
           <li><a href="#" class="menu-link" onclick="showContent('kwitansi')"><i class="menu-icon bx bx-file"></i>Buat Kwitansi</a></li>
+          <li><a href="#" class="menu-link" onclick="showContent('cetakKwitansi')"><i class="menu-icon bx bx-printer"></i>Cetak Kwitansi</a></li>
+
           <li>
             <form action="{{ route('logout') }}" method="POST">
               @csrf
@@ -711,6 +715,45 @@ function editKwitansi(id) {
 
 `
 ,
+
+    cetakKwitansi: `
+      <h2>Cetak Kwitansi</h2>
+      <table class="table table-bordered table-striped table-hover">
+        <thead class="table-light">
+          <tr>
+            <th>Nomor Invoice</th>
+            <th>Supplier</th>
+            <th>Proyek</th>
+            <th>Total Tagihan</th>
+            <th>Jenis Pembayaran</th>
+            <th>Untuk Pembayaran</th>
+            <th>Tanggal</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($kwitansi_acc as $kwitansi)
+          <tr>
+            <td>{{ $kwitansi->nomor_invoice }}</td>
+            <td>{{ $kwitansi->supplier }}</td>
+            <td>{{ $kwitansi->proyek }}</td>
+            <td>Rp. {{ number_format($kwitansi->total_tagihan, 2) }}</td>
+            <td>{{ $kwitansi->jenis_pembayaran }}</td>
+            <td>{{ $kwitansi->untuk_pembayaran }}</td>
+            <td>{{ $kwitansi->created_at->format('d-m-Y') }}</td>
+         <td>
+            <a href="{{ route('kwitansi.detail', $kwitansi->id) }}" class="btn btn-primary">Cetak</a>
+          </td>
+          </tr>
+          @endforeach
+        </tbody>
+      </table>
+     
+    `,
+
+
+
+
       };
       document.getElementById('mainContent').innerHTML = content[page];
     }

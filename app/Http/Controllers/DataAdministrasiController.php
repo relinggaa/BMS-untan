@@ -6,6 +6,7 @@ use App\Models\Kas;
 use App\Models\Invoice;
 use App\Models\Kwitansi;
 use App\Models\Pengujian;
+use App\Models\KwitansiAcc;
 use Illuminate\Http\Request;
 use App\Models\DataPelanggan;
 use App\Models\InvoiceLapangan;
@@ -41,7 +42,8 @@ class DataAdministrasiController extends Controller
         $kwitansis = Kwitansi::orderBy('created_at', 'desc')->get();
         $dataPelanggan = DataPelangganBendahara::orderBy('created_at', 'desc')->get();
         $invoicesLapangan = InvoiceLapangan::orderBy('created_at', 'desc')->get();
-        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData','invoices','kasData','kwitansis','dataPelanggan','invoicesLapangan'));
+        $kwitansi_acc = KwitansiAcc::orderBy('created_at', 'desc')->get(); 
+        return view('index-bendahara', compact('files', 'pelanggan', 'pengujianData','invoices','kasData','kwitansis','dataPelanggan','invoicesLapangan','kwitansi_acc'));
     }
     
     public function upload(Request $request)
