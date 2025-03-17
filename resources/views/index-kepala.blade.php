@@ -89,11 +89,9 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('laporanSiapCetak')"><i class="menu-icon bx bx-printer"></i>Laporan Siap Cetak</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('generateKey')"><i class="menu-icon bx bx-key"></i>Generate Key</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('backupData')"><i class="menu-icon bx bx-cloud-download"></i>Backup All Data</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('dataLaporan')"><i class="menu-icon bx bx-file"></i>Data Laporan</a></li>
-          <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('dataPengujian')"><i class="menu-icon bx bx-file"></i>Data Pengujian</a></li>
           <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('dataBuktiPembayaran')"><i class="menu-icon bx bx-receipt"></i>Data Bukti Pembayaran</a></li>
           <li class="nav-item">
             <form action="{{ route('logout') }}" method="POST">
@@ -119,11 +117,7 @@
         </div>
 
         <ul class="list-unstyled mt-2">
-          <li>
-            <a href="#" class="d-block p-2" onclick="showContent('laporanSiapCetak')">
-              <i class="menu-icon bx bx-printer"></i>Laporan Siap Cetak
-            </a>
-          </li>
+  
           <li>
             <a href="#" class="d-block p-2" onclick="showContent('generateKey')">
               <i class="menu-icon bx bx-key"></i>Generate Key
@@ -139,11 +133,7 @@
               <i class="menu-icon bx bx-file"></i>Data Laporan
             </a>
           </li>
-          <li>
-            <a href="#" class="d-block p-2" onclick="showContent('dataPengujian')">
-              <i class="menu-icon bx bx-file"></i>Data Pengujian
-            </a>
-          </li>
+      
           <li>
             <a href="#" class="d-block p-2" onclick="showContent('dataBuktiPembayaran')">
               <i class="menu-icon bx bx-receipt"></i>Data Bukti Pembayaran
@@ -241,7 +231,46 @@
     </tbody>
 </table>
       `,
-      dataKwintasi: '<h2>Backup All Data</h2><p>Konten kwintansi di sini.</p>',
+      dataKwintasi: `
+       <h2>Data Kwitansi</h2>
+    <table class="table table-bordered table-striped table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">Nomor Invoice</th>
+                <th scope="col">Supplier</th>
+                <th scope="col">Proyek</th>
+                <th scope="col">Total Tagihan</th>
+                <th scope="col">Jenis Pembayaran</th>
+                <th scope="col">Untuk Pembayaran</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($kwitansi as $item)
+            <tr>
+                <td>{{ $item->nomor_invoice }}</td>
+                <td>{{ $item->supplier }}</td>
+                <td>{{ $item->proyek }}</td>
+                <td>{{ number_format($item->total_tagihan, 2) }}</td>
+                <td>{{ $item->jenis_pembayaran }}</td>
+                <td>{{ $item->untuk_pembayaran }}</td>
+                <td>
+                    <!-- Tombol Accept dengan pengecekan apakah sudah diterima -->
+                    @if($item->is_accepted)
+                        <button class="btn btn-success" disabled>Accepted</button>
+                    @else
+                        <form action="{{ route('kwitansi.accept', $item->id) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-success">Accept</button>
+                        </form>
+                    @endif
+                </td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+`,
+
         dataLaporan: '<h2>Data Laporan</h2><p>Konten data laporan di sini.</p>',
         dataBuktiPembayaran: '<h2>Data Bukti Pembayaran</h2><p>Konten data bukti pembayaran di sini.</p>',
         dataPengujian: `

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Key; 
 use App\Models\Pengujian;
 use Illuminate\Http\Request;
+use App\Models\KwitansiKepalaLab;
 use Illuminate\Support\Facades\Log;
 
 class KeyController extends Controller
@@ -252,13 +253,14 @@ class KeyController extends Controller
     }
     public function index()
     {
-       
-        $keys = Key::all();
-        $pengujianData = Pengujian::all();
+        $keys = Key::orderBy('created_at', 'desc')->get();
+        $pengujianData = Pengujian::orderBy('created_at', 'desc')->get();
+        $kwitansi = KwitansiKepalaLab::orderBy('created_at', 'desc')->get();
     
      
-        return view('index-kepala', compact('keys', 'pengujianData'));
+        return view('index-kepala', compact('keys', 'pengujianData', 'kwitansi'));
     }
+    
     
     public function destroy($id)
     {

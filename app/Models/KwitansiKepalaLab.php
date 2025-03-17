@@ -8,6 +8,6 @@ class KwitansiKepalaLab extends Model
 {
     use HasFactory;
 
-    protected $table = 'kwitansiKepalaLab';  // Tabel yang digunakan
-    protected $fillable = ['nomor_invoice', 'supplier', 'proyek', 'total_tagihan', 'jenis_pembayaran', 'untuk_pembayaran'];
+    protected $table = 'kwitansiKepalaLab'; 
+    protected $fillable = ['nomor_invoice', 'supplier', 'proyek', 'total_tagihan', 'jenis_pembayaran', 'untuk_pembayaran',  'is_accepted',];
 }
