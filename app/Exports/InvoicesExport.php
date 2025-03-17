@@ -20,7 +20,7 @@ class InvoicesExport implements FromCollection, WithHeadings
     public function collection()
     {
         return DataPelanggan::whereBetween('tanggal_datang', [$this->startDate, $this->endDate])
-            ->get(['no_invoice', 'nama_perusahaan', 'nama_proyek', 'permohonan', 'tanggal_datang', 'teknisi']);
+            ->get(['no_invoice', 'nama_perusahaan', 'nama_proyek', 'permohonan', 'tanggal_datang', ]);
     }
     public function exportInvoice()
     {
