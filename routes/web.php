@@ -15,6 +15,7 @@ use App\Http\Controllers\KwitansiController;
 use App\Http\Controllers\BendaharaController;
 use App\Http\Controllers\PengujianController;
 use App\Http\Controllers\KwitansiAccController;
+use App\Http\Controllers\DaftarInvoiceController;
 use App\Http\Controllers\DataPelangganController;
 use App\Http\Controllers\InvoiceLapanganController;
 use App\Http\Controllers\LaporanPenyeliaController;
@@ -235,6 +236,9 @@ Route::put('/invoice-lapangan/{id}', [InvoiceLapanganController::class, 'update'
 // Route untuk menghapus Invoice Lapangan
 Route::delete('/invoice-lapangan/{id}', [InvoiceLapanganController::class, 'destroy'])->name('invoice-lapangan.destroy');
 // routes/web.php
+// In routes/web.php
 
+Route::get('/data-pelanggan/{no_invoice}', [DataPelangganController::class, 'searchInvoice']);
+Route::post('invoice/store', [DaftarInvoiceController::class, 'store'])->name('invoice.store');
 Route::post('/accept-kwitansi/{id}', [KwitansiAccController::class, 'accept'])->name('kwitansi.accept');
 Route::get('/kwitansi/{id}', [KwitansiController::class, 'showDetail'])->name('kwitansi.detail');

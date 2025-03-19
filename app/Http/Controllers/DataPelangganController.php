@@ -181,5 +181,17 @@ class DataPelangganController extends Controller
         $laporanFiles = Laporan::orderBy('created_at', 'desc')->get(); 
         return view('index-pelaporan', compact('dataPelanggan', 'lembarPengujianPelaporan', 'invoices', 'invoiceLapangan','laporanFiles'));
     }
+    public function searchInvoice($no_invoice)
+{
+    
+    $invoice = DataPelanggan::where('no_invoice', $no_invoice)->first();
 
+    if ($invoice) {
+        
+        return response()->json($invoice);
+    } else {
+        
+        return response()->json(null);
+    }
+}
 }
