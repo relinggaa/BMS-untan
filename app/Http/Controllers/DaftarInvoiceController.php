@@ -13,7 +13,7 @@ class DaftarInvoiceController extends Controller
 {
     public function store(Request $request)
     {
-       
+     
         $validatedData = $request->validate([
             'no_invoice' => 'required|unique:daftar_invoices',
             'nama_perusahaan' => 'required',

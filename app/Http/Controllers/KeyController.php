@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Key; 
+use App\Models\DfInvoice;
 use App\Models\Pengujian;
 use Illuminate\Http\Request;
 use App\Models\KwitansiKepalaLab;
 use Illuminate\Support\Facades\Log;
+use App\Models\LaporanUntukPenyelia;
 
 class KeyController extends Controller
 {
@@ -122,7 +124,7 @@ class KeyController extends Controller
     {
         
         if (!session('login_teknisi')) {
-            Log::info("Session login_teknisi tidak ditemukan.");
+            Log::info(message: "Session login_teknisi tidak ditemukan.");
             return redirect()->route('login.teknisi')->with('error', 'Anda harus login terlebih dahulu.');
         }
 
@@ -255,10 +257,10 @@ class KeyController extends Controller
     {
         $keys = Key::orderBy('created_at', 'desc')->get();
         $pengujianData = Pengujian::orderBy('created_at', 'desc')->get();
-        $kwitansi = KwitansiKepalaLab::orderBy('created_at', 'desc')->get();
-    
-     
-        return view('index-kepala', compact('keys', 'pengujianData', 'kwitansi'));
+        $kwitansi = KwitansiKepalaLab::orderBy('created_at', 'desc')->get(); 
+        $laporanData = LaporanUntukPenyelia::orderBy('created_at', 'desc')->get();
+        $invoices = DfInvoice::orderBy('created_at', 'desc')->get(); 
+        return view('index-kepala', compact('keys', 'pengujianData', 'kwitansi','laporanData','invoices'));
     }
     
     

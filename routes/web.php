@@ -13,6 +13,7 @@ use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\KwitansiController;
 use App\Http\Controllers\BendaharaController;
+use App\Http\Controllers\DfInvoiceController;
 use App\Http\Controllers\PengujianController;
 use App\Http\Controllers\KwitansiAccController;
 use App\Http\Controllers\DaftarInvoiceController;
@@ -165,7 +166,7 @@ Route::put('/kas/{kasId}', [KasController::class, 'update'])->name('kas.update')
 
 Route::get('/kas/{kasId}', [KasController::class, 'show'])->name('kas.show');
 
-Route::post('/invoice', [InvoiceController::class, 'store'])->name('invoice.store');
+Route::post('/invoicelab', [InvoiceController::class, 'store'])->name('invoice.sto');
 
 Route::get('/invoices', [InvoiceController::class, 'index'])->name('invoice.index');
 
@@ -201,7 +202,7 @@ Route::delete('/keys/{id}', [KeyController::class, 'destroy'])->name('keys.destr
 // Route untuk edit
 Route::get('/data-pelanggan/{id}/edit', [DataPelangganController::class, 'edit'])->name('data.pelanggan.edit');
 Route::delete('/data-pelanggan/{id}', [DataPelangganController::class, 'destroy'])->name('data.pelanggan.destroy');
-Route::get('/data-kwitansi/{nomorInvoice}', [KwitansiController::class, 'getKwitansiData']);
+Route::get('/data-kwitansi/{nomorInvoice}', [DfInvoiceController::class, 'searchKwitansi']);
 
 // Route untuk update
 Route::put('/data-pelanggan/{id}', [DataPelangganController::class, 'update'])->name('data.pelanggan.update');
@@ -209,7 +210,9 @@ Route::post('/data-pelanggan/{id}/send-to-bendahara', [DataPelangganController::
 Route::post('/data-pelanggan/{id}/send-to-teknisi', [DataPelangganController::class, 'sendToTeknisi'])->name('data.pelanggan.sendToTeknisi');
 Route::post('/input-kas', [KasController::class, 'store'])->name('kas.submit');
 // Route untuk update Kwitansi
-Route::put('/kwitansi/{id}', [KwitansiController::class, 'update'])->name('kwitansi.update');
+Route::get('/kwitansi/edit/{id}', [KwitansiController::class, 'edit'])->name('kwitansi.edit');
+Route::put('/kwitansi/update/{id}', [KwitansiController::class, 'update'])->name('kwitansi.update');
+
 
 Route::get('/kwitansi/{id}', [KwitansiController::class, 'show'])->name('kwitansi.show');
 
@@ -239,6 +242,8 @@ Route::delete('/invoice-lapangan/{id}', [InvoiceLapanganController::class, 'dest
 // In routes/web.php
 
 Route::get('/data-pelanggan/{no_invoice}', [DataPelangganController::class, 'searchInvoice']);
-Route::post('invoice/store', [DaftarInvoiceController::class, 'store'])->name('invoice.store');
+
+Route::get('/invoice/create', [DfInvoiceController::class, 'create'])->name('invoice.create');
+Route::post('/invoice', [DfInvoiceController::class, 'store'])->name('invoice.store');
 Route::post('/accept-kwitansi/{id}', [KwitansiAccController::class, 'accept'])->name('kwitansi.accept');
 Route::get('/kwitansi/{id}', [KwitansiController::class, 'showDetail'])->name('kwitansi.detail');

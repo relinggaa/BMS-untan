@@ -19,6 +19,7 @@ return new class extends Migration
             $table->decimal('total_tagihan', 15, 2);
             $table->string('jenis_pembayaran');
             $table->string('untuk_pembayaran');
+            $table->text('telah_diterima'); 
             $table->timestamps(); 
         });
     }

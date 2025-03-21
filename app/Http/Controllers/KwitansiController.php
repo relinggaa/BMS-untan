@@ -15,61 +15,78 @@ class KwitansiController extends Controller
 {
     public function store(Request $request)
     {
+        try {
+            // Validasi
+            $request->validate([
+                'nomor_invoice_kwitansi' => 'required|string|max:255',
+                'supplier_kwitansi' => 'required|string|max:255',
+                'proyek_kwitansi' => 'required|string|max:255',
+                'total_tagihan_kwitansi' => 'required|numeric',
+                'jenis_pembayaran_kwitansi' => 'required|string|max:255',
+                'untuk_pembayaran_kwitansi' => 'required|string|max:500',
+                'telah_diterima' => 'required|string|max:255',
+            ]);
     
-        $request->validate([
-            'nomor_invoice_kwitansi' => 'required|exists:data_pelanggan_bendaharas,no_invoice',
-            'supplier_kwitansi' => 'required|string|max:255',
-            'proyek_kwitansi' => 'required|string|max:255',
-            'total_tagihan_kwitansi' => 'required|numeric',
-            'jenis_pembayaran_kwitansi' => 'required|string|max:255',
-            'untuk_pembayaran_kwitansi' => 'required|string|max:500',
-        ]);
-
-        $kwitansi = new Kwitansi;
-        $kwitansi->nomor_invoice = $request->nomor_invoice_kwitansi;
-        $kwitansi->supplier = $request->supplier_kwitansi;
-        $kwitansi->proyek = $request->proyek_kwitansi;
-        $kwitansi->total_tagihan = $request->total_tagihan_kwitansi;
-        $kwitansi->jenis_pembayaran = $request->jenis_pembayaran_kwitansi;
-        $kwitansi->untuk_pembayaran = $request->untuk_pembayaran_kwitansi;
-
-        $kwitansi->save();
-
-        return redirect()->back()->with('success-simpan-kwitansi', 'Kwitansi berhasil disimpan');
+            // Simpan data ke database
+            $kwitansi = new Kwitansi;
+            $kwitansi->nomor_invoice = $request->nomor_invoice_kwitansi;
+            $kwitansi->supplier = $request->supplier_kwitansi;
+            $kwitansi->proyek = $request->proyek_kwitansi;
+            $kwitansi->total_tagihan = $request->total_tagihan_kwitansi;
+            $kwitansi->jenis_pembayaran = $request->jenis_pembayaran_kwitansi;
+            $kwitansi->untuk_pembayaran = $request->untuk_pembayaran_kwitansi;
+            $kwitansi->telah_diterima = $request->telah_diterima;
+   
+            $kwitansi->save();
+    
+            return redirect()->back()->with('success-simpan-kwitansi', 'Kwitansi berhasil disimpan');
+        } catch (\Exception $e) {
+        
+            DD($e->getMessage());
+        }
     }
-
+    
     public function update(Request $request, $id)
     {
-        $kwitansi = Kwitansi::findOrFail($id);
-
-        $request->validate([
-            'nomor_invoice_kwitansi' => 'required',
-            'supplier_kwitansi' => 'required',
-            'proyek_kwitansi' => 'required',
-            'total_tagihan_kwitansi' => 'required|numeric',
-            'jenis_pembayaran_kwitansi' => 'required',
-            'untuk_pembayaran_kwitansi' => 'required',
+        $kwitansi = Kwitansi::find($id);
+    
+        if (!$kwitansi) {
+            return redirect()->route('dashboard.bendahara')->with('error', 'Kwitansi not found');
+        }
+    
+        $kwitansi->update([
+            'nomor_invoice' => $request->nomor_invoice_kwitansi,
+            'supplier' => $request->supplier_kwitansi,
+            'proyek' => $request->proyek_kwitansi,
+            'total_tagihan' => $request->total_tagihan_kwitansi,
+            'jenis_pembayaran' => $request->jenis_pembayaran_kwitansi,
+            'untuk_pembayaran' => $request->untuk_pembayaran_kwitansi,
+            'telah_diterima' => $request->telah_diterima,
         ]);
     
-        $kwitansi->nomor_invoice = $request->nomor_invoice_kwitansi;
-        $kwitansi->supplier = $request->supplier_kwitansi;
-        $kwitansi->proyek = $request->proyek_kwitansi;
-        $kwitansi->total_tagihan = $request->total_tagihan_kwitansi;
-        $kwitansi->jenis_pembayaran = $request->jenis_pembayaran_kwitansi;
-        $kwitansi->untuk_pembayaran = $request->untuk_pembayaran_kwitansi;
-    
-        $kwitansi->save();
-    
-        return redirect()->route('dashboard.bendahara')->with('success-edit-kwitansi', 'Kwitansi berhasil diperbarui!');
+        return redirect()->route('dashboard.bendahara')->with('success-edit-kwitansi', 'Kwitansi updated successfully');
     }
+    
     public function show($id)
-{
-    $kwitansi = Kwitansi::find($id);
-    if ($kwitansi) {
-        return response()->json($kwitansi); 
+    {
+        $kwitansi = Kwitansi::find($id);
+    
+        if ($kwitansi) {
+            return response()->json($kwitansi);
+        } else {
+            return response()->json(['error' => 'Kwitansi not found'], 404);
+        }
     }
-    return response()->json(['error' => 'Kwitansi not found'], 404);
-}
+    public function edit($id)
+    {
+        $kwitansi = Kwitansi::find($id);
+        if ($kwitansi) {
+            return view('kwitansi-edit', compact('kwitansi'));
+        } else {
+            return redirect()->route('kwitansi.index')->with('error', 'Kwitansi not found');
+        }
+    }
+        
 public function destroy($id)
 {
     $kwitansi = Kwitansi::find($id);
@@ -97,6 +114,8 @@ public function sendToKepalaLab($id)
     $data->total_tagihan = $kwitansi->total_tagihan;
     $data->jenis_pembayaran = $kwitansi->jenis_pembayaran;
     $data->untuk_pembayaran = $kwitansi->untuk_pembayaran;
+   
+    
     $data->save();  
 
     $kwitansi->is_sent = true;

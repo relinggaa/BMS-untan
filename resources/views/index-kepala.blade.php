@@ -154,7 +154,19 @@
       <div class="flex-grow-1 p-3" id="mainContent">
         <h1>Selamat Datang di Halaman Kepala Lab</h1>
       </div>
-
+      <div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="imageModalLabel">Bukti Pembayaran</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="modalImage" src="" class="img-fluid" alt="Bukti Pembayaran" />
+                </div>
+            </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -270,9 +282,78 @@
         </tbody>
     </table>
 `,
+dataLaporan: `
+    <h2>Data Laporan</h2>
 
-        dataLaporan: '<h2>Data Laporan</h2><p>Konten data laporan di sini.</p>',
-        dataBuktiPembayaran: '<h2>Data Bukti Pembayaran</h2><p>Konten data bukti pembayaran di sini.</p>',
+    <!-- Table to display the laporan data -->
+    <table class="table table-bordered table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Nomor</th>
+                <th>Nama Laporan</th>
+                <th>File Laporan</th>
+                <th>Created At</th>
+           
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($laporanData as $index => $laporan)
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $laporan->laporan->name ?? 'Tidak ada laporan' }}</td>
+                    <td>
+                        @if($laporan->file_path)
+                            <a href="{{ asset('storage/' . $laporan->file_path) }}" target="_blank">
+                                Lihat Laporan
+                            </a>
+                        @else
+                            Tidak ada file
+                        @endif
+                    </td>
+                    <td>{{ $laporan->created_at->format('d M Y H:i') }}</td>
+                 
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
+`,
+        dataBuktiPembayaran: `<h2>Data Bukti Pembayaran</h2>
+
+<!-- Tabel untuk menampilkan data bukti pembayaran -->
+<table class="table table-bordered table-striped table-hover">
+    <thead>
+        <tr>
+            <th>Nomor</th>
+            <th>Nomor Invoice</th>
+            <th>Nama Perusahaan</th>
+            <th>Nama Proyek</th>
+            <th>Bukti Pembayaran</th>
+            <th>Tanggal Pembayaran</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($invoices as $index => $invoice)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ $invoice->no_invoice }}</td>
+                <td>{{ $invoice->nama_perusahaan }}</td>
+                <td>{{ $invoice->nama_proyek }}</td>
+                   <td>
+                    @if($invoice->bukti_pembayaran)
+                        <!-- Thumbnail Image -->
+                 
+                    <img src="{{ asset('storage/' . $invoice->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="img-thumbnail" style="width: 100px; height: auto; cursor: pointer;" onclick="showImage('{{ asset('storage/' . $invoice->bukti_pembayaran) }}')">
+
+
+                    @else
+                        Tidak ada bukti
+                    @endif
+                </td>
+                <td>{{ \Carbon\Carbon::parse($invoice->tanggal_pembayaran_ke_va)->format('d M Y') }}</td>
+            </tr>
+        @endforeach
+    </tbody>
+</table>`,
         dataPengujian: `
  <h2>Data Pengujian</h2>
 <!-- Form to Add or Edit Data Pengujian -->
@@ -395,7 +476,12 @@
         }
     });
 }
+function showImage(imageUrl) {
 
+  document.getElementById('modalImage').src = imageUrl;
+
+  $('#imageModal').modal('show');
+}
 
 
     document.addEventListener("DOMContentLoaded", function() {
@@ -425,6 +511,16 @@
             Swal.fire({
                 title: "Pengujian Disimpan!",
                 text: "Berhasil menyimpan data pengujian",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('dataPengujian');
+            });
+        @endif
+        @if (session('success-acc-kwitansi'))
+            Swal.fire({
+                title: "Pengujian Disimpan!",
+                text: "Berhasil menyetujui kwintansi",
                 icon: "success",
                 confirmButtonColor: "#28a745",
             }).then(() => {

@@ -194,7 +194,19 @@
     </div>
   </div>
 </div>
-
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="imageModalLabel">Bukti Pembayaran</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <img id="modalImage" src="" class="img-fluid" alt="Bukti Pembayaran" />
+          </div>
+      </div>
+  </div>
+</div>
 
 
 <!-- Modal Edit Kwitansi -->
@@ -241,7 +253,10 @@
             <label for="untuk_pembayaran_kwitansi_edit" class="form-label">Untuk Pembayaran</label>
             <textarea class="form-control" id="untuk_pembayaran_kwitansi_edit" name="untuk_pembayaran_kwitansi" required></textarea>
           </div>
-
+          <div class="mb-3">
+            <label for="telah_diterima_edit" class="form-label">Telah Diterima</label>
+            <input type="text" class="form-control" id="telah_diterima_edit" name="telah_diterima_edit" required></input>
+          </div>
           <button type="submit" class="btn btn-primary">Update Kwitansi</button>
         </form>
       </div>
@@ -318,22 +333,26 @@ function editKas(kasId) {
 }
 
 function editKwitansi(id) {
-    fetch(`/kwitansi/${id}`)  
-        .then(response => response.json()) 
-        .then(data => {
-    
-            document.getElementById('kwitansiId').value = data.id;
-            document.getElementById('nomor_invoice_kwitansi_edit').value = data.nomor_invoice;
-            document.getElementById('supplier_kwitansi_edit').value = data.supplier;
-            document.getElementById('proyek_kwitansi_edit').value = data.proyek;
-            document.getElementById('total_tagihan_kwitansi_edit').value = data.total_tagihan;
-            document.getElementById('jenis_pembayaran_kwitansi_edit').value = data.jenis_pembayaran;
-            document.getElementById('untuk_pembayaran_kwitansi_edit').value = data.untuk_pembayaran;
+  fetch(`/kwitansi/${id}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log(data); 
+        document.getElementById('kwitansiId').value = data.id;
+        document.getElementById('nomor_invoice_kwitansi_edit').value = data.nomor_invoice;
+        document.getElementById('supplier_kwitansi_edit').value = data.supplier;
+        document.getElementById('proyek_kwitansi_edit').value = data.proyek;
+        document.getElementById('total_tagihan_kwitansi_edit').value = data.total_tagihan;
+        document.getElementById('jenis_pembayaran_kwitansi_edit').value = data.jenis_pembayaran;
+        document.getElementById('untuk_pembayaran_kwitansi_edit').value = data.untuk_pembayaran;
+        document.getElementById('telah_diterima_edit').value = data.telah_diterima;
 
-          
-            document.getElementById('editKwitansiForm').action = `/kwitansi/${data.id}`;
-        })
-        .catch(error => console.error('Error fetching Kwitansi data:', error));
+        
+        document.getElementById('editKwitansiForm').action = `/kwitansi/${data.id}`;
+    })
+    .catch(error => {
+        console.error('Error fetching Kwitansi data:', error);
+    });
+
 }
 
 
@@ -357,7 +376,8 @@ function editKwitansi(id) {
           </ul>`,
           buatInvoice: `
        <h2>Invoice Lab</h2>
-<form id="invoiceForm" action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
+
+  <form id="invoiceForm" action="{{ route('invoice.sto') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     <!-- Upload Excel Fields -->
@@ -439,7 +459,7 @@ daftarInvoice: `
   <h2>Daftar Invoice</h2>
 
   <!-- Form untuk menambah data invoice -->
- <form action="{{ route('invoice.store') }}" method="POST">
+   <form action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="row">
         <div class="col-md-12">
@@ -514,46 +534,52 @@ daftarInvoice: `
 
 
   <br><br>
+  <h3>Daftar Invoice yang Tersimpan</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>No Invoice</th>
+                <th>Nama Perusahaan</th>
+                <th>Nama Proyek</th>
+                <th>Permohonan</th>
+                <th>Tanggal Datang</th>
+                <th>Tanggal Pembayaran Ke VA</th>
+                <th>Total Harga</th>
+                <th>Jenis Pembayaran</th>
+                <th>Bukti Pembayaran</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach($Dfinvoices as $invoice)
+                <tr>
+                    <td>{{ $invoice->no_invoice }}</td>
+                    <td>{{ $invoice->nama_perusahaan }}</td>
+                    <td>{{ $invoice->nama_proyek }}</td>
+                    <td>{{ $invoice->permohonan }}</td>
+                    <td>{{ \Carbon\Carbon::parse($invoice->tanggal_datang)->format('d-m-Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($invoice->tanggal_pembayaran_ke_va)->format('d-m-Y') }}</td>
+                    <td>Rp {{ number_format($invoice->total_harga, 2, ',', '.') }}</td>
+                   <td>{{ $invoice->jenis_pembayaran }}</td>
+             <td>
+                    @if($invoice->bukti_pembayaran)
+                        <!-- Thumbnail Image -->
+                 
+                    <img src="{{ asset('storage/' . $invoice->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="img-thumbnail" style="width: 100px; height: auto; cursor: pointer;" onclick="showImage('{{ asset('storage/' . $invoice->bukti_pembayaran) }}')">
 
+
+                    @else
+                        Tidak ada bukti
+                    @endif
+                </td>
+
+                   
+                </tr>
+            @endforeach
+        </tbody>
+    </table>
   <!-- Tabel Daftar Invoice -->
-  <table class="table table-bordered table-striped table-hover">
-      <thead class="table-light">
-          <tr>
-              <th>No</th>
-              <th>No Invoice</th>
-              <th>Nama Perusahaan</th>
-              <th>Nama Proyek</th>
-              <th>Permohonan</th>
-              <th>Tanggal Datang</th>
-              <th>Tanggal Pembayaran Ke VA</th>
-              <th>Total Harga</th>
-              <th>Jenis Pembayaran</th>
-              <th>Bukti Pembayaran</th>
-              <th>Aksi</th>
-          </tr>
-      </thead>
-      <tbody>
-          @foreach ($invoices as $index => $invoice)
-          <tr>
-              <td>{{ $index + 1 }}</td>
-              <td>{{ $invoice->no_invoice }}</td>
-              <td>{{ $invoice->nama_perusahaan }}</td>
-              <td>{{ $invoice->nama_proyek }}</td>
-              <td>{{ $invoice->permohonan }}</td>
-              <td>{{ \Carbon\Carbon::parse($invoice->tanggal_datang)->format('d-m-Y') }}</td>
-              <td>{{ \Carbon\Carbon::parse($invoice->tanggal_pembayaran_ke_va)->format('d-m-Y') }}</td>
-              <td>Rp. {{ number_format($invoice->total_harga, 2) }}</td>
-              <td>{{ $invoice->jenis_pembayaran }}</td>
-              <td>
-                  <a href="{{ asset('storage/' . $invoice->bukti_pembayaran) }}" target="_blank" class="btn btn-info">Lihat Bukti</a>
-              </td>
-              <td>
-                  <a href="{{ route('invoice.show', $invoice->id) }}" class="btn btn-primary">Detail</a>
-              </td>
-          </tr>
-          @endforeach
-      </tbody>
-  </table>
+  
 `
 ,
         dataPelanggan: `<h2>Data Pelanggan</h2>
@@ -774,6 +800,10 @@ daftarInvoice: `
     <label for="untuk_pembayaran_kwitansi" class="form-label">Untuk Pembayaran</label>
     <textarea class="form-control" id="untuk_pembayaran_kwitansi" name="untuk_pembayaran_kwitansi" required></textarea>
   </div>
+  <div class="mb-3">
+    <label for="telah_diterima" class="form-label">Telah Diterima</label>
+    <input type="text" class="form-control" id="telah_diterima" name="telah_diterima" required></input>
+  </div>
 
   <button type="submit" class="btn btn-primary">Simpan Kwitansi</button>
 </form>
@@ -791,6 +821,7 @@ daftarInvoice: `
             <th>Total Tagihan</th>
             <th>Jenis Pembayaran</th>
             <th>Untuk Pembayaran</th>
+            <th>Telah Di Terima</th>
             <th>Tanggal</th>
             <th>Aksi</th>
         </tr>
@@ -804,13 +835,14 @@ daftarInvoice: `
                 <td>Rp. {{ number_format($kwitansi->total_tagihan, 2) }}</td>
                 <td>{{ $kwitansi->jenis_pembayaran }}</td>
                 <td>{{ $kwitansi->untuk_pembayaran }}</td>
+                <td>{{ $kwitansi->telah_diterima }}</td>
                 <td>{{ $kwitansi->created_at->format('d-m-Y') }}</td>
                  <td>
                   
                 </td>
                  <td>
                     @if($kwitansi->is_sent)
-                         <button class="btn btn-warning disabled" data-bs-toggle="modal" data-bs-target="#editKwitansiModal" onclick="editKwitansi({{ $kwitansi->id }})">Edit</button>
+                         <a href="{{ route('kwitansi.edit', $kwitansi->id) }}" class="disabled btn btn-warning">Edit</a>
                       <form action="{{ route('kwitansi.destroy', $kwitansi->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kwitansi ini?');">
                         @csrf
                         @method('DELETE')
@@ -821,7 +853,7 @@ daftarInvoice: `
                             @csrf
                             <button type="submit" class="btn btn-primary" @if($kwitansi->is_sent) disabled @endif>Kirim</button>
                         </form>
-                       <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#editKwitansiModal" onclick="editKwitansi({{ $kwitansi->id }})">Edit</button>
+                       <a href="{{ route('kwitansi.edit', $kwitansi->id) }}" class="btn btn-warning">Edit</a>
                       <form action="{{ route('kwitansi.destroy', $kwitansi->id) }}" method="POST" style="display:inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kwitansi ini?');">
                         @csrf
                         @method('DELETE')
@@ -829,7 +861,7 @@ daftarInvoice: `
                     </form>
                     @endif
                 </td>
-
+                  
             </tr>
         @endforeach
     </tbody>
@@ -1048,7 +1080,12 @@ function searchKwitansi() {
             })
             .catch(error => console.error('Error fetching kwitansi:', error));
     }
+    function showImage(imageUrl) {
 
+    document.getElementById('modalImage').src = imageUrl;
+    
+    $('#imageModal').modal('show');
+}
 
     @if (session('success-buat-invoice'))
             Swal.fire({
@@ -1088,6 +1125,16 @@ function searchKwitansi() {
                 confirmButtonColor: "#28a745",
             }).then(() => {
                 showContent('kas');
+            });
+            @endif
+        @if (session('success-edit-kwitansi'))
+            Swal.fire({
+                title: "Edit Berhasil",
+                text: "Data kwitasi telah diperbarui",
+                icon: "success",
+                confirmButtonColor: "#28a745",
+            }).then(() => {
+                showContent('kwitansi');
             });
             @endif
         @if (session('success-edit-invoicelab'))

@@ -15,6 +15,7 @@ class Kwitansi extends Model
         'proyek',
         'total_tagihan',
         'jenis_pembayaran',
-        'untuk_pembayaran'
+        'untuk_pembayaran',
+         'telah_diterima',
     ];
 }

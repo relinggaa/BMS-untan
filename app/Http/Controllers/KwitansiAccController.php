@@ -27,6 +27,7 @@ class KwitansiAccController extends Controller
                 'total_tagihan' => $kwitansi->total_tagihan,
                 'jenis_pembayaran' => $kwitansi->jenis_pembayaran,
                 'untuk_pembayaran' => $kwitansi->untuk_pembayaran,
+                'telah_diterima'=>$kwitansi->telah_diterima,
                 'is_accepted' => true,  // Tandai kwitansi ini diterima di KwitansiAcc
             ]);
 
