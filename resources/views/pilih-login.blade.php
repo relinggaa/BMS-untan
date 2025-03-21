@@ -14,7 +14,7 @@
 <body>
   <x-homenav/>
   <div class="container-fluid">
-    <video class="video-bg" autoplay loop muted >
+    <video class="video-bg " autoplay loop muted playsinline >
       <source src="/img/video.MOV" type="video/mp4">
       Your browser does not support the video tag.
     </video>

@@ -140,22 +140,20 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-              @foreach ($laporanPenyelia as $file)
-                <form action="{{ route('laporan.storeCatatan', $file->id) }}" method="POST">
-                  @endforeach
-                    @csrf
-                    <input type="hidden" name="laporan_id" id="laporan_id">
-                    <div class="mb-3">
-                        <label for="catatan" class="form-label">Catatan</label>
-                        <textarea class="form-control" id="catatan" name="catatan" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Simpan Catatan</button>
-                </form>
-             
+              <form action="{{ route('laporan.storeCatatan', ':laporanId') }}" method="POST" id="catatanForm">
+                @csrf
+                <input type="hidden" name="laporan_id" id="laporan_id">
+                <div class="mb-3">
+                    <label for="catatan" class="form-label">Catatan</label>
+                    <textarea class="form-control" id="catatan" name="catatan" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Simpan Catatan</button>
+            </form>
             </div>
         </div>
     </div>
 </div>
+
 
   <script>
     function showContent(page) {
@@ -184,9 +182,10 @@
               
 
                 <!-- Button to Add Catatan -->
-                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#addCatatanModal" onclick="setLaporanId({{ $file->laporan->id }})">
-                    Tambahkan Catatan
-                </button>
+               <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#addCatatanModal" onclick="setLaporanId({{ $file->laporan->id }})">
+                  Tambahkan Catatan
+              </button>
+
             </td>
         </tr>
         @endforeach
@@ -205,8 +204,15 @@
       }
     }
     function setLaporanId(laporanId) {
-        document.getElementById('laporan_id').value = laporanId;
-    }
+    // Set the correct laporan_id in the hidden input field
+    document.getElementById('laporan_id').value = laporanId;
+    
+    // Update the form action URL with the actual laporan_id
+    var formAction = '/laporan/' + laporanId + '/catatan'; 
+    document.getElementById('catatanForm').action = formAction;
+}
+
+    
     @if (session('success-buat-catatan'))
             Swal.fire({
                 title: "Catatan Berhasil Di Buat!",

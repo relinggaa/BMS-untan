@@ -50,6 +50,8 @@
           <li><a href="#" class="d-block p-2" onclick="showContent('invoiceLab')"><i class="menu-icon bx bx-file"></i>Invoice Lab</a></li>
           <li><a href="#" class="d-block p-2" onclick="showContent('invoiceLapangan')"><i class="menu-icon bx bx-download"></i>Invoice Lapangan</a></li>
           <li><a href="#" class="d-block p-2" onclick="showContent('laporan')"><i class="menu-icon bx bx-file"></i>Laporan</a></li>
+          <li><a href="#" class="d-block p-2" onclick="showContent('catatanPenyelia')"><i class="menu-icon bx bx-message"></i>Catatan dari Penyelia</a></li>
+
           <li class="menu-item">
             <form action="{{ route('logout') }}" method="POST">
               @csrf
@@ -72,7 +74,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
               <ul class="navbar-nav">
+                <li><a href="#" class="nav-item" onclick="showContent('dataPelanggan')"><i class="menu-icon bx bx-user"></i>Data Pelanggan</a></li>
+                <li><a href="#" class="nav-item" onclick="showContent('lembarPengujian')"><i class="menu-icon bx bx-calendar"></i>Lembar Pengujian</a></li>
+                <li><a href="#" class="nav-item" onclick="showContent('invoiceLab')"><i class="menu-icon bx bx-file"></i>Invoice Lab</a></li>
+                <li><a href="#" class="nav-item" onclick="showContent('invoiceLapangan')"><i class="menu-icon bx bx-download"></i>Invoice Lapangan</a></li>
+                <li><a href="#" class="nav-item" onclick="showContent('laporan')"><i class="menu-icon bx bx-file"></i>Laporan</a></li>
                 <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('dataPelanggan')"><i class="menu-icon bx bx-pencil"></i>Tampilkan Data</a></li>
+                <li class="nav-item"><a class="nav-link" href="#" onclick="showContent('catatanPenyelia')"><i class="menu-icon bx bx-message"></i>Catatan dari Penyelia</a></li>
+
                 <li class="menu-item">
                   <form action="{{ route('logout') }}" method="POST">
                     @csrf
@@ -282,7 +291,40 @@ laporan: `
 
 
 
+`,
+catatanPenyelia: `
+    <h2>Catatan dari Penyelia</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+   
+            <th>File Laporan</th> <!-- File column to display file name -->
+            <th>Catatan</th> <!-- Catatan column to display the note -->
+        </tr>
+    </thead>
+    <tbody>
+        @foreach ($catatanPenyelia as $catatan)
+            <tr>
+            
+                <td>
+                    @if ($catatan->laporan && $catatan->laporan->file_path)
+                        <a href="{{ asset('storage/' . $catatan->laporan->file_path) }}" target="_blank">
+                            {{ basename($catatan->laporan->file_path) }}
+                        </a>
+                    @else
+                        No file available
+                    @endif
+                </td>
+                <td>{{ $catatan->catatan }}</td> <!-- Displaying the note (Catatan) -->
+            </tr>
+        @endforeach
+    </tbody>
+</table>
+
+
 `
+
+     
       };
 
       const mainContent = document.getElementById('mainContent');

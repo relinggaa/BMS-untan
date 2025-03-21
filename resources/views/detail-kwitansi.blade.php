@@ -118,15 +118,25 @@
                 <td>{{ $kwitansi->untuk_pembayaran }}</td>
             </tr>
             <tr>
+                <th>Untuk Pembayaran</th>
+                <td>{{ $kwitansi->telah_diterima }}</td>
+            </tr>
+            <tr>
                 <th>Tanggal</th>
                 <td>{{ \Carbon\Carbon::parse($kwitansi->created_at)->format('d-m-Y') }}</td>
             </tr>
         </table>
 
         <div class="footer">
-            <p>_________________________</p>
-            <p>Nama dan Tanda Tangan</p>
-            <p class="mt-5">Pontianak, {{ \Carbon\Carbon::parse($kwitansi->tanggal)->format('d F Y') }}</p>
+            <div class="text-center">
+                <img src="{{ asset('img/ttd.png') }}" alt="Barcode" style="width: 150px; height: auto;">
+            </div>
+            <p>Erwin Sutandar</p>
+          
+     <p class="mt-5">Pontianak, <span id="tanggal-formatted"> {{ \Carbon\Carbon::parse($kwitansi->tanggal)->locale('id')->format('d F Y') }}</span></p>
+     <p class="mt-5"><i> Di Tandatangani secara elektronik</i></p>
+    </div>
+
         </div>
 
         <div class="text-center mt-4 no-print">
@@ -134,5 +144,20 @@
             <button onclick="window.print();" class="btn btn-primary">Print</button>
         </div>
     </div>
+    <script>
+                // Ambil elemen tanggal dari HTML
+                var tanggalStr = "{{ \Carbon\Carbon::parse($kwitansi->created_at)->format('Y-m-d') }}"; // Menggunakan PHP untuk memformat tanggal
+
+                    // Parsing tanggal dengan JavaScript
+                    var tanggal = new Date(tanggalStr);
+
+                    // Format tanggal menggunakan 'id-ID'
+                    var options = { year: 'numeric', month: 'long', day: 'numeric' };
+                    var tanggalFormatted = new Intl.DateTimeFormat('id-ID', options).format(tanggal);
+
+                    // Masukkan tanggal yang sudah diformat ke dalam elemen dengan id 'tanggal-formatted'
+                    document.getElementById('tanggal-formatted').textContent = tanggalFormatted;
+                    </script>
+    </script>
 </body>
 </html>

@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Key; 
+use App\Models\Laporan;
 use App\Models\DfInvoice;
 use App\Models\Pengujian;
+use App\Models\KwitansiAcc;
 use Illuminate\Http\Request;
 use App\Models\KwitansiKepalaLab;
 use Illuminate\Support\Facades\Log;
@@ -215,7 +217,7 @@ class KeyController extends Controller
     public function logout(Request $request)
     {
         $request->session()->flush();
-        return redirect()->route('login.kepala')->with('success', 'Logout berhasil.');
+        return redirect()->route('pilih.login')->with('success', 'Logout berhasil.');
     }
 
 
@@ -249,9 +251,10 @@ class KeyController extends Controller
             return redirect()->route('login.pencetak')->with('error', 'Anda harus login terlebih dahulu.');
         }
 
-        
-        Log::info('Session login_pencetak: ' . session('login_pencetak'));
-        return view('index-pencetak');
+        $kwitansi_acc = KwitansiAcc::orderBy('created_at', 'desc')->get(); 
+
+    
+        return view('index-pencetak', compact('kwitansi_acc'));
     }
     public function index()
     {
@@ -272,7 +275,7 @@ class KeyController extends Controller
             $key->delete();
             return redirect()->back()->with('success-hapus-key', 'Key berhasil dihapus.');
         }
-
+       
         return redirect()->back()->with('error', 'Key tidak ditemukan.');
     }
 }

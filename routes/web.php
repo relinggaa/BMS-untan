@@ -132,7 +132,7 @@ Route::get('/login-penyelia', function () {
 
 
 
-Route::post('/laporan/{id}/catatan', [LaporanPenyeliaController::class, 'storeCatatan'])->name('laporan.storeCatatan');
+Route::post('/laporan/{laporanId}/catatan', [LaporanPenyeliaController::class, 'storeCatatan'])->name('laporan.storeCatatan');
 
 
 

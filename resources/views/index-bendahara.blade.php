@@ -882,6 +882,7 @@ daftarInvoice: `
             <th>Total Tagihan</th>
             <th>Jenis Pembayaran</th>
             <th>Untuk Pembayaran</th>
+            <th>Telah Di Terima</th>
             <th>Tanggal</th>
             <th>Aksi</th>
           </tr>
@@ -895,6 +896,7 @@ daftarInvoice: `
             <td>Rp. {{ number_format($kwitansi->total_tagihan, 2) }}</td>
             <td>{{ $kwitansi->jenis_pembayaran }}</td>
             <td>{{ $kwitansi->untuk_pembayaran }}</td>
+            <td>{{ $kwitansi->telah_diterima }}</td>
             <td>{{ $kwitansi->created_at->format('d-m-Y') }}</td>
          <td>
             <a href="{{ route('kwitansi.detail', $kwitansi->id) }}" class="btn btn-primary">Cetak</a>

@@ -50,12 +50,6 @@
             </a>
           </li>
           <li class="menu-item">
-            <a href="javascript:void(0);" class="menu-link">
-              <i class="menu-icon tf-icons bx bx-cloud-download"></i>
-              <div>Backup All Data</div>
-            </a>
-          </li>
-          <li class="menu-item">
             <form action="{{ route('logout') }}" method="POST">
               @csrf
               <button type="submit" class="menu-link w-100 text-start bg-transparent" style="border:none;">
@@ -67,13 +61,38 @@
         </ul>
       </aside>
       <!-- / Menu -->
-            <h1>Berhasil Login Pencetak</h1>
-         
-
-          <!-- / Content -->
-        </div>
-      </div>
-    </div>
+      
+      <div class="container mt-2" id="mainContent">
+        <h2>Kwitansi Siap Cetak</h2>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>No Invoice</th>
+                    <th>Supplier</th>
+                    <th>Proyek</th>
+                    <th>Total Tagihan</th>
+                    <th>Jenis Pembayaran</th>
+                    <th>Untuk Pembayaran</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($kwitansi_acc as $kwitansi)
+                    <tr>
+                        <td>{{ $kwitansi->nomor_invoice }}</td>
+                        <td>{{ $kwitansi->supplier }}</td>
+                        <td>{{ $kwitansi->proyek }}</td>
+                        <td>Rp. {{ number_format($kwitansi->total_tagihan, 2) }}</td>
+                        <td>{{ $kwitansi->jenis_pembayaran }}</td>
+                        <td>{{ $kwitansi->untuk_pembayaran }}</td>
+                        <td>
+                          <a href="{{ route('kwitansi.detail', $kwitansi->id) }}" class="btn btn-primary">Cetak</a>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        
   </div>
 
   <script src="/dashboard/assets/vendor/libs/jquery/jquery.js"></script>
